@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1fkk3ltyl0ci"
-path="res://.godot/imported/White_Cloud_1.png-ce82d164f9292ad1c06f934ceb971962.ctex"
+uid="uid://bb0mhag05qehc"
+path="res://.godot/imported/testgreen.png-b3b9b2b1fc63881c092f6d8bc2ab6ad8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://code/White_Cloud_1.png"
-dest_files=["res://.godot/imported/White_Cloud_1.png-ce82d164f9292ad1c06f934ceb971962.ctex"]
+source_file="res://sprites/testgreen.png"
+dest_files=["res://.godot/imported/testgreen.png-b3b9b2b1fc63881c092f6d8bc2ab6ad8.ctex"]
 
 [params]
 

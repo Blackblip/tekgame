@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://bqfeff63m5idh" path="res://code/game/player2.gd" id="2_lnu2h"]
 [ext_resource type="Script" uid="uid://d4n58ctcbe3" path="res://code/game/turn_handler.gd" id="2_yqjtg"]
-[ext_resource type="Texture2D" uid="uid://bd5ya3doewi1m" path="res://code/Sprite-0001.png" id="4_iywne"]
-[ext_resource type="Texture2D" uid="uid://cug5yjqjsqjsw" path="res://code/mountaintest.png" id="4_lbhrr"]
-[ext_resource type="Texture2D" uid="uid://indsm7dn7det" path="res://code/Sprite-0002.png" id="5_iywne"]
-[ext_resource type="Texture2D" uid="uid://w5ojjvl7njsx" path="res://code/cloudTest.png" id="6_p57ef"]
-[ext_resource type="Texture2D" uid="uid://1fkk3ltyl0ci" path="res://code/White_Cloud_1.png" id="7_u5sy4"]
+[ext_resource type="Texture2D" uid="uid://bd5ya3doewi1m" path="res://sprites/Sprite-0001.png" id="4_iywne"]
+[ext_resource type="Texture2D" uid="uid://cug5yjqjsqjsw" path="res://sprites/mountaintest.png" id="4_lbhrr"]
+[ext_resource type="Texture2D" uid="uid://indsm7dn7det" path="res://sprites/Sprite-0002.png" id="5_iywne"]
+[ext_resource type="Texture2D" uid="uid://w5ojjvl7njsx" path="res://sprites/cloudTest.png" id="6_p57ef"]
+[ext_resource type="Texture2D" uid="uid://1fkk3ltyl0ci" path="res://sprites/White_Cloud_1.png" id="7_u5sy4"]
 
 [sub_resource type="GDScript" id="GDScript_uwrxv"]
 script/source = "extends Node2D
