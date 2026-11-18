@@ -7,21 +7,17 @@ signal grid_update(grid, updateInfo)
 var isMyTurn = false
 
 func _ready():
+	print(MatchSettings.grid_data_p2)
+	
 	z_index = 10
 	turnHandler.turn_changed.connect(_turn_changed)
-	for cell in gridLayerP1.get_used_cells():
-		MatchSettings.grid_data_p1_p2_perspective[str(cell)] = {
-			"hidden" : true,
-			"building" : "Unknown",
-			"connectedBuildings" : {},
-			"tileType" : "Unknown",
-		}
 
 var last_hovered
 func _process(_delta: float) -> void:
 	if isMyTurn == true:
 		var mouse_pos = get_global_mouse_position()
-		var tile_pos = gridLayer.local_to_map(to_local(mouse_pos))
+		var tile_pos: Vector2i = gridLayer.local_to_map(gridLayer.to_local(mouse_pos))
+		
 		if not last_hovered == tile_pos:
 			last_hovered = tile_pos
 			queue_redraw()
@@ -41,12 +37,16 @@ func _draw():
 		return
 	if gridLayer.get_cell_source_id(last_hovered) == -1:
 		return
-	var tile_pos = to_local(
-	gridLayer.to_global(gridLayer.map_to_local(last_hovered))
-	)
+	var tile_pos = to_global(last_hovered)
 	var tile_size = Vector2(gridLayer.tile_set.tile_size)
 	var rect = Rect2(
-	tile_pos - tile_size / 2,
+		tile_pos - tile_size / 2,
 		tile_size
 	)
-	draw_rect(rect, Color.WHITE, false, 2.0)
+	
+	var key = Vector2i(tile_pos.x, tile_pos.y)
+	var tile_type = MatchSettings.grid_data_p2[str(key)]["tileType"]
+	if Configs.buildable_tiles.has(tile_type):
+		draw_rect(rect, Color.WHITE, false, 2.0)
+	else:
+		draw_rect(rect, Color.RED, false, 2.0)

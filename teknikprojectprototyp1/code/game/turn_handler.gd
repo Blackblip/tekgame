@@ -47,13 +47,13 @@ func _ready():
 		
 		MatchSettings.grid_data_p2[str(cell)] = {
 			"building" : "",
-			"connectedBuildings" : {}, 
+			#"connectedBuildings" : {}, 
 			"tileType" : tileType,
 		}
 		MatchSettings.grid_data_p2_p1_perspective[str(cell)] = {
 			"hidden" : true,
 			"building" : "Unknown",
-			"connectedBuildings" : {}, 
+			#"connectedBuildings" : {}, 
 			"tileType" : "Unknown",
 		}
 	
@@ -148,8 +148,8 @@ func start_turn():
 				var _tile_data = p1Grid.get_cell_tile_data(cell)
 				var tile_type = MatchSettings.grid_data_p1[str(cell)].tileType
 
-				if MatchSettings.tile_types.has(tile_type):
-					var tile = MatchSettings.tile_types[tile_type]
+				if Configs.tile_types.has(tile_type):
+					var tile = Configs.tile_types[tile_type]
 					p1Grid.set_cell(cell, tile[0], tile[1])
 			for cell in p2Grid.get_used_cells():
 				if MatchSettings.grid_data_p2_p1_perspective[str(cell)]["hidden"] == true:
@@ -167,8 +167,8 @@ func start_turn():
 				var _tile_data = p2Grid.get_cell_tile_data(cell)
 				var tile_type = MatchSettings.grid_data_p2[str(cell)].tileType
 
-				if MatchSettings.tile_types.has(tile_type):
-					var tile = MatchSettings.tile_types[tile_type]
+				if Configs.tile_types.has(tile_type):
+					var tile = Configs.tile_types[tile_type]
 					p2Grid.set_cell(cell, tile[0], tile[1])
 			for cell in p1Grid.get_used_cells():
 				if MatchSettings.grid_data_p1_p2_perspective[str(cell)]["hidden"] == true:
