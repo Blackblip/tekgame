@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://dfol304vf38b7"]
+[gd_scene load_steps=18 format=4 uid="uid://dfol304vf38b7"]
 
 [ext_resource type="Script" uid="uid://bqfeff63m5idh" path="res://code/game/player2.gd" id="2_lnu2h"]
 [ext_resource type="Script" uid="uid://d4n58ctcbe3" path="res://code/game/turn_handler.gd" id="2_yqjtg"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cug5yjqjsqjsw" path="res://code/mountaintest.png" id="4_lbhrr"]
 [ext_resource type="Texture2D" uid="uid://indsm7dn7det" path="res://code/Sprite-0002.png" id="5_iywne"]
 [ext_resource type="Texture2D" uid="uid://w5ojjvl7njsx" path="res://code/cloudTest.png" id="6_p57ef"]
+[ext_resource type="Texture2D" uid="uid://1fkk3ltyl0ci" path="res://code/White_Cloud_1.png" id="7_u5sy4"]
 
 [sub_resource type="GDScript" id="GDScript_uwrxv"]
 script/source = "extends Node2D
@@ -35,6 +36,12 @@ texture_region_size = Vector2i(20, 20)
 0:0/0 = 0
 0:0/0/custom_data_0 = "Grass"
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u5sy4"]
+texture = ExtResource("6_p57ef")
+texture_region_size = Vector2i(25, 25)
+0:0/0 = 0
+0:0/0/custom_data_0 = "Cloud"
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_iywne"]
 texture = ExtResource("4_lbhrr")
 texture_region_size = Vector2i(20, 20)
@@ -47,11 +54,10 @@ texture_region_size = Vector2i(25, 25)
 0:0/0 = 0
 0:0/0/custom_data_0 = "Test"
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u5sy4"]
-texture = ExtResource("6_p57ef")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gee14"]
+texture = ExtResource("7_u5sy4")
 texture_region_size = Vector2i(25, 25)
 0:0/0 = 0
-0:0/0/custom_data_0 = "Cloud"
 
 [sub_resource type="TileSet" id="TileSet_lbhrr"]
 tile_size = Vector2i(25, 25)
@@ -60,7 +66,8 @@ custom_data_layer_0/type = 4
 sources/0 = SubResource("TileSetAtlasSource_lnu2h")
 sources/2 = SubResource("TileSetAtlasSource_iywne")
 sources/3 = SubResource("TileSetAtlasSource_p57ef")
-sources/4 = SubResource("TileSetAtlasSource_u5sy4")
+sources/10 = SubResource("TileSetAtlasSource_u5sy4")
+sources/4 = SubResource("TileSetAtlasSource_gee14")
 
 [sub_resource type="GDScript" id="GDScript_0tnpc"]
 script/source = "extends Node2D
@@ -158,12 +165,6 @@ offset_bottom = 27.0
 text = "PLAYER 2"
 horizontal_alignment = 1
 
-[node name="cloudGrid" type="TileMapLayer" parent="TurnHandler/P2G"]
-z_as_relative = false
-position = Vector2(5, 7.085)
-tile_set = SubResource("TileSet_lbhrr")
-collision_enabled = false
-
 [node name="P1G" type="Node2D" parent="TurnHandler"]
 script = SubResource("GDScript_0tnpc")
 
@@ -197,10 +198,3 @@ offset_right = 452.0
 offset_bottom = 27.0
 text = "PLAYER 1"
 horizontal_alignment = 1
-
-[node name="cloudGrid" type="TileMapLayer" parent="TurnHandler/P1G"]
-z_index = 5
-z_as_relative = false
-position = Vector2(-656.03, 7.085)
-tile_set = SubResource("TileSet_lbhrr")
-collision_enabled = false

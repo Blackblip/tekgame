@@ -22,3 +22,10 @@ var grid_data_p1 = {}
 var grid_data_p1_p2_perspective = {}
 var grid_data_p2 = {}
 var grid_data_p2_p1_perspective = {}
+
+var tile_types = {
+	"Cloud": [4, Vector2i(0, 0)],
+	"Grass": [0, Vector2i(0, 0)],
+	"Mountain": [2, Vector2i(0, 0)],
+	"Test": [3, Vector2i(0,0)]
+}

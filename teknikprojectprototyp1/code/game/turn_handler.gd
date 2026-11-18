@@ -12,6 +12,9 @@ class_name TurnHandler
 @onready var p2Node = $P2G
 @onready var player2Name = $P2G/pName
 
+@onready var p1Grid = $P1G/GridContainer/grid
+@onready var p2Grid = $P2G/GridContainer/grid
+
 enum Turn { PLAYER1, PLAYER2 }
 var current_turn: Turn
 var isPrep = true
@@ -21,6 +24,39 @@ var turns_left = 0
 signal turn_changed(new_turn)
 
 func _ready():
+	for cell in p1Grid.get_used_cells():
+		var tile_data = p1Grid.get_cell_tile_data(cell)
+		var tileType
+		tileType = tile_data.get_custom_data("tileType")
+		
+		MatchSettings.grid_data_p1[str(cell)] = {
+			"building" : "",
+			"connectedBuildings" : {}, 
+			"tileType" : tileType,
+		}
+		MatchSettings.grid_data_p1_p2_perspective[str(cell)] = {
+			"hidden" : true,
+			"building" : "Unknown",
+			"connectedBuildings" : {}, 
+			"tileType" : "Unknown",
+		}
+	for cell in p2Grid.get_used_cells():
+		var tile_data = p2Grid.get_cell_tile_data(cell)
+		var tileType
+		tileType = tile_data.get_custom_data("tileType")
+		
+		MatchSettings.grid_data_p2[str(cell)] = {
+			"building" : "",
+			"connectedBuildings" : {}, 
+			"tileType" : tileType,
+		}
+		MatchSettings.grid_data_p2_p1_perspective[str(cell)] = {
+			"hidden" : true,
+			"building" : "Unknown",
+			"connectedBuildings" : {}, 
+			"tileType" : "Unknown",
+		}
+	
 	MatchSettings.actionsPerTurnP1 = MatchSettings.starting_actions
 	MatchSettings.actionsPerTurnP2 = MatchSettings.starting_actions
 	
@@ -51,6 +87,11 @@ func prepare_turn():
 	
 	match current_turn:
 		Turn.PLAYER1:
+			for cell in p2Grid.get_used_cells():
+				p2Grid.set_cell(cell, 4, Vector2i(0, 0))
+			for cell in p1Grid.get_used_cells():
+				p1Grid.set_cell(cell, 4, Vector2i(0, 0))
+			
 			#p1Node.visible = false
 			#p2Node.visible = false
 			
@@ -59,6 +100,11 @@ func prepare_turn():
 			startButton.visible = true
 			endButton.visible = false
 		Turn.PLAYER2:
+			for cell in p2Grid.get_used_cells():
+				p2Grid.set_cell(cell, 4, Vector2i(0, 0))
+			for cell in p1Grid.get_used_cells():
+				p1Grid.set_cell(cell, 4, Vector2i(0, 0))
+			
 			#p1Node.visible = false
 			#p2Node.visible = false
 			
@@ -97,6 +143,17 @@ func start_turn():
 			
 			endButton.visible = true
 			startButton.visible = false
+			
+			for cell in p1Grid.get_used_cells():
+				var _tile_data = p1Grid.get_cell_tile_data(cell)
+				var tile_type = MatchSettings.grid_data_p1[str(cell)].tileType
+
+				if MatchSettings.tile_types.has(tile_type):
+					var tile = MatchSettings.tile_types[tile_type]
+					p1Grid.set_cell(cell, tile[0], tile[1])
+			for cell in p2Grid.get_used_cells():
+				if MatchSettings.grid_data_p2_p1_perspective[str(cell)]["hidden"] == true:
+					p2Grid.set_cell(cell, 4, Vector2i(0, 0))
 		Turn.PLAYER2:
 			MatchSettings.actionsLeftP2 = MatchSettings.actionsPerTurnP2
 			actionsUI.text = str(MatchSettings.actionsLeftP2)
@@ -105,3 +162,14 @@ func start_turn():
 			
 			startButton.visible = false
 			endButton.visible = true
+			
+			for cell in p2Grid.get_used_cells():
+				var _tile_data = p2Grid.get_cell_tile_data(cell)
+				var tile_type = MatchSettings.grid_data_p2[str(cell)].tileType
+
+				if MatchSettings.tile_types.has(tile_type):
+					var tile = MatchSettings.tile_types[tile_type]
+					p2Grid.set_cell(cell, tile[0], tile[1])
+			for cell in p1Grid.get_used_cells():
+				if MatchSettings.grid_data_p1_p2_perspective[str(cell)]["hidden"] == true:
+					p1Grid.set_cell(cell, 4, Vector2i(0, 0))
