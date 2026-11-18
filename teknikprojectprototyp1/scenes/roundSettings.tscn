@@ -1,0 +1,93 @@
+[gd_scene load_steps=8 format=3 uid="uid://cbvucqqcdm06w"]
+
+[ext_resource type="Script" uid="uid://duvipwobmu03c" path="res://code/settings/t_turns.gd" id="1_uwrxv"]
+[ext_resource type="Script" uid="uid://d31oxuneh86ha" path="res://code/settings/s_actions.gd" id="2_lnu2h"]
+[ext_resource type="Script" uid="uid://cw6qgdt1f8e8k" path="res://code/settings/c_multi.gd" id="3_lbhrr"]
+[ext_resource type="Script" uid="uid://dwjhj4snxs4mg" path="res://code/settings/s_round.gd" id="4_lbhrr"]
+[ext_resource type="Script" uid="uid://ceneylnfdtye4" path="res://code/settings/p1_name.gd" id="5_0dm4v"]
+[ext_resource type="Script" uid="uid://b1eaunv1vjehe" path="res://code/settings/p2_name.gd" id="6_cmyip"]
+
+[sub_resource type="Theme" id="Theme_lbhrr"]
+default_font_size = 29
+
+[node name="Game" type="Node2D"]
+
+[node name="SettingsScreen" type="Node2D" parent="."]
+
+[node name="Control" type="Control" parent="SettingsScreen"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1153.0
+offset_bottom = 646.0
+theme = SubResource("Theme_lbhrr")
+metadata/_edit_use_anchors_ = true
+
+[node name="TTurns" type="SpinBox" parent="SettingsScreen/Control"]
+layout_mode = 0
+offset_left = 460.0
+offset_top = 202.0
+offset_right = 745.0
+offset_bottom = 271.0
+min_value = 1.0
+max_value = 10000.0
+value = 1.0
+alignment = 1
+prefix = "Turns total"
+custom_arrow_step = 1.0
+script = ExtResource("1_uwrxv")
+
+[node name="SActions" type="SpinBox" parent="SettingsScreen/Control"]
+layout_mode = 0
+offset_left = 460.0
+offset_top = 372.0
+offset_right = 745.0
+offset_bottom = 441.0
+min_value = 1.0
+max_value = 10000.0
+value = 1.0
+alignment = 1
+prefix = "Starting actions"
+custom_arrow_step = 1.0
+script = ExtResource("2_lnu2h")
+
+[node name="CMulti" type="SpinBox" parent="SettingsScreen/Control"]
+layout_mode = 0
+offset_left = 460.0
+offset_top = 288.0
+offset_right = 745.0
+offset_bottom = 357.0
+min_value = 1.0
+step = 0.25
+value = 1.0
+alignment = 1
+prefix = "Cost multiplier"
+custom_arrow_step = 1.0
+script = ExtResource("3_lbhrr")
+
+[node name="SRound" type="Button" parent="SettingsScreen/Control"]
+layout_mode = 0
+offset_left = 401.0
+offset_top = 460.0
+offset_right = 785.0
+offset_bottom = 542.0
+theme_override_font_sizes/font_size = 50
+text = "start"
+script = ExtResource("4_lbhrr")
+
+[node name="P1Name" type="LineEdit" parent="SettingsScreen/Control"]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 304.0
+offset_right = 328.0
+offset_bottom = 352.0
+placeholder_text = "Player One"
+script = ExtResource("5_0dm4v")
+
+[node name="P2Name" type="LineEdit" parent="SettingsScreen/Control"]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 363.0
+offset_right = 328.0
+offset_bottom = 411.0
+placeholder_text = "Player Two"
+script = ExtResource("6_cmyip")
