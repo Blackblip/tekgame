@@ -12,8 +12,8 @@ class_name TurnHandler
 @onready var p2Node = $P2G
 @onready var player2Name = $P2G/pName
 
-@onready var p1Grid = $P1G/GridContainer/grid
-@onready var p2Grid = $P2G/GridContainer/grid
+@onready var p1Grid
+@onready var p2Grid
 
 enum Turn { PLAYER1, PLAYER2 }
 var current_turn: Turn
@@ -24,10 +24,9 @@ var turns_left = 0
 signal turn_changed(new_turn)
 var gameGoing = false
 
-func _ready():
-	p1Node.visible = false
-	p2Node.visible = false
-	UI.visible = false
+func prepare_grid_data():
+	p1Grid = $P1G/GridContainer/grid
+	p2Grid = $P2G/GridContainer/grid
 	
 	for cell in p1Grid.get_used_cells():
 		var tile_data = p1Grid.get_cell_tile_data(cell)
@@ -61,6 +60,11 @@ func _ready():
 			"connectedBuildings" : {}, 
 			"tileType" : "Unknown",
 		}
+
+func _ready():
+	p1Node.visible = false
+	p2Node.visible = false
+	UI.visible = false
 	
 	MatchSettings.actionsPerTurnP1 = MatchSettings.starting_actions
 	MatchSettings.actionsPerTurnP2 = MatchSettings.starting_actions
@@ -76,6 +80,13 @@ func _ready():
 	endButton.pressed.connect(_end_turn_pressed)
 
 func _start_game():
+	prepare_grid_data()
+	p1Node.visible = true
+	p2Node.visible = true
+	p1Grid.visible = true
+	p2Grid.visible = true
+	UI.visible = true
+	
 	gameGoing = true
 	prepare_turn()
 
