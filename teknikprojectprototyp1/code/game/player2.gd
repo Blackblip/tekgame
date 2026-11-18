@@ -20,8 +20,8 @@ func _ready():
 var last_hovered
 func _process(_delta: float) -> void:
 	if isMyTurn == true:
-		var mouse_pos = get_global_mouse_position()
-		var tile_pos = gridLayer.local_to_map(to_local(mouse_pos))
+		var mouse_pos = gridLayer.to_local(get_global_mouse_position())
+		var tile_pos = gridLayer.local_to_map(mouse_pos)
 		if not last_hovered == tile_pos:
 			last_hovered = tile_pos
 			queue_redraw()
@@ -36,17 +36,22 @@ func _turn_changed(turn):
 	if turnn == "0":
 		isMyTurn = false
 
+
 func _draw():
 	if last_hovered == null:
 		return
 	if gridLayer.get_cell_source_id(last_hovered) == -1:
 		return
-	var tile_pos = to_local(
-	gridLayer.to_global(gridLayer.map_to_local(last_hovered))
-	)
+	var tile_pos = gridLayer.map_to_local(last_hovered)
+	var global_pos = gridLayer.to_global(tile_pos)
+	var local_pos = to_local(global_pos)
 	var tile_size = Vector2(gridLayer.tile_set.tile_size)
 	var rect = Rect2(
-	tile_pos - tile_size / 2,
-		tile_size
+	local_pos - tile_size / 2,
+	tile_size
 	)
-	draw_rect(rect, Color.WHITE, false, 2.0)
+	var tileType = MatchSettings.grid_data_p2[str(last_hovered)]["tileType"]
+	if Configs.buildable_tiles.has(tileType):
+		draw_rect(rect, Color.WHITE, false, 2.0)
+	else:
+		draw_rect(rect, Color.RED, false, 2.0)

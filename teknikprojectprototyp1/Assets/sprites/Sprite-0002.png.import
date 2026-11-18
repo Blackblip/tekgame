@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1fkk3ltyl0ci"
-path="res://.godot/imported/White_Cloud_1.png-0d3a55a9713e6d4892c9b390f8caf4e7.ctex"
+uid="uid://indsm7dn7det"
+path="res://.godot/imported/Sprite-0002.png-568418cc636e4ee83a9fcce679266622.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/White_Cloud_1.png"
-dest_files=["res://.godot/imported/White_Cloud_1.png-0d3a55a9713e6d4892c9b390f8caf4e7.ctex"]
+source_file="res://Assets/sprites/Sprite-0002.png"
+dest_files=["res://.godot/imported/Sprite-0002.png-568418cc636e4ee83a9fcce679266622.ctex"]
 
 [params]
 

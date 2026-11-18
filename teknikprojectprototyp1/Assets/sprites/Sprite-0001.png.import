@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cug5yjqjsqjsw"
-path="res://.godot/imported/mountaintest.png-3ec59964e3d5834908991fd76a5bbbbb.ctex"
+uid="uid://bd5ya3doewi1m"
+path="res://.godot/imported/Sprite-0001.png-ee2d5c72a18c34633d945fd13f28a60d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/mountaintest.png"
-dest_files=["res://.godot/imported/mountaintest.png-3ec59964e3d5834908991fd76a5bbbbb.ctex"]
+source_file="res://Assets/sprites/Sprite-0001.png"
+dest_files=["res://.godot/imported/Sprite-0001.png-ee2d5c72a18c34633d945fd13f28a60d.ctex"]
 
 [params]
 

@@ -22,8 +22,13 @@ var isPrep = true
 var turns_left = 0
 
 signal turn_changed(new_turn)
+var gameGoing = false
 
 func _ready():
+	p1Node.visible = false
+	p2Node.visible = false
+	UI.visible = false
+	
 	for cell in p1Grid.get_used_cells():
 		var tile_data = p1Grid.get_cell_tile_data(cell)
 		var tileType
@@ -63,15 +68,16 @@ func _ready():
 	player1Name.text = str(MatchSettings.p1_name)
 	player2Name.text = str(MatchSettings.p2_name)
 	
-	UI.visible = true
-	
 	turns_left = MatchSettings.total_turns
 	turnsLeftUI.text = str(turns_left)
 	
-	prepare_turn()
 	endButton.visible = false
 	startButton.pressed.connect(_start_turn_pressed)
 	endButton.pressed.connect(_end_turn_pressed)
+
+func _start_game():
+	gameGoing = true
+	prepare_turn()
 
 func _start_turn_pressed():
 	start_turn()
@@ -82,6 +88,9 @@ func _end_turn_pressed():
 		print("game ended")
 
 func prepare_turn():
+	if gameGoing == false:
+		return
+	
 	isPrep = true
 	turn_changed.emit("Prep")
 	
@@ -115,6 +124,8 @@ func prepare_turn():
 
 var loop_count = 1
 func next_turn():
+	if gameGoing == false:
+		return
 	loop_count += 1
 	if loop_count >= 3:
 		turns_left = turns_left - 1
@@ -131,6 +142,8 @@ func next_turn():
 			prepare_turn()
 
 func start_turn():
+	if gameGoing == false:
+		return
 	isPrep = false
 	turn_changed.emit(current_turn)
 	
@@ -148,8 +161,8 @@ func start_turn():
 				var _tile_data = p1Grid.get_cell_tile_data(cell)
 				var tile_type = MatchSettings.grid_data_p1[str(cell)].tileType
 
-				if MatchSettings.tile_types.has(tile_type):
-					var tile = MatchSettings.tile_types[tile_type]
+				if Configs.tile_types.has(tile_type):
+					var tile = Configs.tile_types[tile_type]
 					p1Grid.set_cell(cell, tile[0], tile[1])
 			for cell in p2Grid.get_used_cells():
 				if MatchSettings.grid_data_p2_p1_perspective[str(cell)]["hidden"] == true:
@@ -167,8 +180,8 @@ func start_turn():
 				var _tile_data = p2Grid.get_cell_tile_data(cell)
 				var tile_type = MatchSettings.grid_data_p2[str(cell)].tileType
 
-				if MatchSettings.tile_types.has(tile_type):
-					var tile = MatchSettings.tile_types[tile_type]
+				if Configs.tile_types.has(tile_type):
+					var tile = Configs.tile_types[tile_type]
 					p2Grid.set_cell(cell, tile[0], tile[1])
 			for cell in p1Grid.get_used_cells():
 				if MatchSettings.grid_data_p1_p2_perspective[str(cell)]["hidden"] == true:
