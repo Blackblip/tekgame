@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://1fkk3ltyl0ci" path="res://Assets/sprites/White_Cloud_1.png" id="1_n3usn"]
 [ext_resource type="Texture2D" uid="uid://indsm7dn7det" path="res://Assets/sprites/Sprite-0002.png" id="2_1m5fv"]
 [ext_resource type="Texture2D" uid="uid://w5ojjvl7njsx" path="res://Assets/sprites/cloudTest.png" id="3_j5ogp"]
-[ext_resource type="Script" uid="uid://bqfeff63m5idh" path="res://code/game/highlighter.gd" id="4_5vgqk"]
+[ext_resource type="Script" path="res://code/game/highlighter.gd" id="4_n3usn"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3llhl"]
 texture = ExtResource("1_n3usn")
@@ -38,4 +38,4 @@ tile_set = SubResource("TileSet_p57ef")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 z_index = 1
-script = ExtResource("4_5vgqk")
+script = ExtResource("4_n3usn")

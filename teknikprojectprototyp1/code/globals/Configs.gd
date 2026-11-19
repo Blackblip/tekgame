@@ -7,3 +7,10 @@ var tile_types = {
 	"Test": [3, Vector2i(0,0)]
 }
 var buildable_tiles = ["Grass", "Test"]
+var buildings = {
+	"Town": {
+		"Name": "Town",
+		"Path": "",
+		"ActionBonus": 1,
+	},
+}
