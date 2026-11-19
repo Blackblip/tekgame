@@ -37,12 +37,14 @@ func prepare_grid_data():
 			"building" : "",
 			"connectedBuildings" : {}, 
 			"tileType" : tileType,
+			"tile_pos" : cell
 		}
 		MatchSettings.grid_data_p1_p2_perspective[str(cell)] = {
 			"hidden" : true,
 			"building" : "Unknown",
 			"connectedBuildings" : {}, 
 			"tileType" : "Unknown",
+			"tile_pos" : cell
 		}
 	for cell in p2Grid.get_used_cells():
 		var tile_data = p2Grid.get_cell_tile_data(cell)
@@ -53,12 +55,14 @@ func prepare_grid_data():
 			"building" : "",
 			"connectedBuildings" : {}, 
 			"tileType" : tileType,
+			"tile_pos" : cell
 		}
 		MatchSettings.grid_data_p2_p1_perspective[str(cell)] = {
 			"hidden" : true,
 			"building" : "Unknown",
 			"connectedBuildings" : {}, 
 			"tileType" : "Unknown",
+			"tile_pos" : cell
 		}
 
 func _ready():

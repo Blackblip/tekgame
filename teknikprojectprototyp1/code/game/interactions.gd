@@ -3,6 +3,8 @@ extends Node
 @onready var scroll = $"."
 @onready var tempButton = $Container/Template
 
+var selected_tile
+
 func _ready():
 	tempButton.visible = false
 
@@ -23,10 +25,21 @@ func show_actions_for_tile(tile_pos, player):
 
 func update_scroll(tile_data):
 	if !tile_data:
+		selected_tile = null
 		for i in container.get_children():
 			if i.name != "Template":
 				i.queue_free()
+				if $"../TurnHandler/P2G/GridContainer".find_child("grid"):
+					$"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight".queue_redraw()
+				if $"../TurnHandler/P1G/GridContainer".find_child("grid"):
+					$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
 		return
+	selected_tile = tile_data.tile_pos
+	if $"../TurnHandler".current_turn == 0:
+		$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
+	elif $"../TurnHandler".current_turn == 1:
+		$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
+	
 	for i in container.get_children():
 		if i.name != "Template":
 			i.free()
@@ -44,7 +57,9 @@ func update_scroll(tile_data):
 func _build(tile_data, build_data):
 	if $"../TurnHandler".current_turn == 0:
 		print("p1 pressed shi")
+		$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
 	elif $"../TurnHandler".current_turn == 1:
+		$"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight".queue_redraw()
 		print("p2 pressed shi")
 	update_scroll(null)
 	print(tile_data.tileType, ", ", build_data.Name)
