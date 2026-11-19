@@ -1,17 +1,21 @@
 extends Node
 @onready var container = $Container
 @onready var scroll = $"."
+@onready var tempButton = $Container/Template
+
+func _ready():
+	tempButton.visible = false
 
 func show_actions_for_tile(tile_pos, player):
 	var tile_data
 	if player == 1:
-		tile_data = MatchSettings.grid_data_p1[tile_pos]
+		tile_data = MatchSettings.grid_data_p1[str(tile_pos)]
 		if tile_data == null:
 			print("tile doesnt exist")
 			return
 		update_scroll(tile_data)
 	elif player == 2:
-		tile_data = MatchSettings.grid_data_p1[tile_pos]
+		tile_data = MatchSettings.grid_data_p2[str(tile_pos)]
 		if tile_data == null:
 			print("tile doesnt exist")
 			return
@@ -19,8 +23,28 @@ func show_actions_for_tile(tile_pos, player):
 
 func update_scroll(tile_data):
 	if !tile_data:
+		for i in container.get_children():
+			if i.name != "Template":
+				i.queue_free()
 		return
+	for i in container.get_children():
+		if i.name != "Template":
+			i.free()
 	if Configs.buildable_tiles.has(tile_data.tileType):
 		for buildings in Configs.buildings:
+			if tile_data.building != "":
+				return
 			var builds = Configs.buildings[buildings]
-			print(builds.Name)
+			var newButton = tempButton.duplicate()
+			newButton.text = builds.Name
+			newButton.visible = true
+			$Container.add_child(newButton)
+			newButton.pressed.connect(_build.bind(tile_data, builds))
+
+func _build(tile_data, build_data):
+	if $"../TurnHandler".current_turn == 0:
+		print("p1 pressed shi")
+	elif $"../TurnHandler".current_turn == 1:
+		print("p2 pressed shi")
+	update_scroll(null)
+	print(tile_data.tileType, ", ", build_data.Name)

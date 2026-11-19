@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://dfol304vf38b7"]
+[gd_scene load_steps=7 format=3 uid="uid://dfol304vf38b7"]
 
+[ext_resource type="Script" path="res://code/game/action_handler.gd" id="2_lbhrr"]
 [ext_resource type="Script" uid="uid://d4n58ctcbe3" path="res://code/game/turn_handler.gd" id="2_yqjtg"]
 [ext_resource type="Script" uid="uid://8036owrisytb" path="res://code/game/interactions.gd" id="3_lnu2h"]
 [ext_resource type="Script" path="res://code/game/map_selector.gd" id="4_lbhrr"]
@@ -77,6 +78,7 @@ script = ExtResource("2_yqjtg")
 z_index = 1
 z_as_relative = false
 position = Vector2(-34, 0)
+script = ExtResource("2_lbhrr")
 
 [node name="GridContainer" type="Panel" parent="TurnHandler/P2G"]
 clip_contents = true
@@ -175,4 +177,9 @@ horizontal_scroll_mode = 3
 script = ExtResource("3_lnu2h")
 
 [node name="Container" type="VBoxContainer" parent="Interactions"]
+layout_direction = 2
 layout_mode = 2
+
+[node name="Template" type="Button" parent="Interactions/Container"]
+layout_mode = 2
+text = "NAME"
