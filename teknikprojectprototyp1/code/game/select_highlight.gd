@@ -15,7 +15,7 @@ func _draw():
 	var tile_pos = $"../../../../../Interactions".selected_tile
 	if tile_pos == null:
 		return
-	
+
 	var local_pos = gridLayer.map_to_local(tile_pos)
 	var global_pos = gridLayer.to_global(local_pos)
 	local_pos = to_local(global_pos)
