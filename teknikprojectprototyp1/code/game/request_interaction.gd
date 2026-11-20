@@ -17,10 +17,11 @@ func _turn_changed(turn):
 		isMyTurn = false
 		queue_redraw()
 
+var tile_pos = Vector2i(-100, -100)
 func _input(event):
-	var last_hovered = $TileMapLayer.last_hovered
+	var last_hovered = $HoverHighlight.last_hovered
 	var mouse_pos = gridLayer.to_local(get_global_mouse_position())
-	var tile_pos = gridLayer.local_to_map(mouse_pos)
+	tile_pos = gridLayer.local_to_map(mouse_pos)
 	
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:

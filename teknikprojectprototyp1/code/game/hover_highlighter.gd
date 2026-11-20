@@ -52,6 +52,6 @@ func _draw():
 	)
 	var tileType = player_grid_data.get(str(last_hovered), {}).get("tileType", "Unknown")
 	if Configs.buildable_tiles.has(tileType):
-		draw_rect(rect, Color.WHITE, false, 2.0)
+		draw_rect(rect, Color.GREEN, false, 2.0)
 	else:
 		draw_rect(rect, Color.RED, false, 2.0)

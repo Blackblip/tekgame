@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://dfol304vf38b7"]
+[gd_scene load_steps=8 format=3 uid="uid://dfol304vf38b7"]
 
-[ext_resource type="Script" path="res://code/game/action_handler.gd" id="2_lbhrr"]
+[ext_resource type="Script" uid="uid://cvw2sg0y2m6e1" path="res://code/game/action_handler.gd" id="2_lbhrr"]
 [ext_resource type="Script" uid="uid://d4n58ctcbe3" path="res://code/game/turn_handler.gd" id="2_yqjtg"]
+[ext_resource type="Script" uid="uid://breu6678utj76" path="res://code/game/building_handler.gd" id="3_iywne"]
 [ext_resource type="Script" uid="uid://8036owrisytb" path="res://code/game/interactions.gd" id="3_lnu2h"]
-[ext_resource type="Script" path="res://code/game/map_selector.gd" id="4_lbhrr"]
+[ext_resource type="Script" uid="uid://jm3hfebbiufq" path="res://code/game/map_selector.gd" id="4_lbhrr"]
 
 [sub_resource type="Theme" id="Theme_lnu2h"]
 
@@ -88,12 +89,16 @@ anchor_right = 1.0
 offset_left = 641.0
 offset_top = 25.0
 offset_right = 1182.0
-offset_bottom = 635.0
+offset_bottom = 784.0
 grow_horizontal = 0
 theme = SubResource("Theme_lnu2h")
 theme_override_styles/panel = SubResource("StyleBoxFlat_lbhrr")
 metadata/GridPosition = Vector2(1.415, 15.915)
 metadata/Player = 2
+
+[node name="BUILDINGS" type="Node2D" parent="TurnHandler/P2G/GridContainer"]
+position = Vector2(-600, -1)
+script = ExtResource("3_iywne")
 
 [node name="pName" type="Label" parent="TurnHandler/P2G"]
 offset_left = 744.0
@@ -105,6 +110,7 @@ horizontal_alignment = 1
 
 [node name="P1G" type="Node2D" parent="TurnHandler"]
 position = Vector2(-34, 0)
+script = ExtResource("2_lbhrr")
 
 [node name="GridContainer" type="Panel" parent="TurnHandler/P1G"]
 clip_contents = true
@@ -116,13 +122,16 @@ anchor_bottom = 0.5
 offset_left = 41.0
 offset_top = 24.0
 offset_right = 582.0
-offset_bottom = 634.0
+offset_bottom = 723.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_lnu2h")
 theme_override_styles/panel = SubResource("StyleBoxFlat_lbhrr")
 metadata/GridPosition = Vector2(-11.01, 16.915)
 metadata/Player = 1
+
+[node name="BUILDINGS" type="Node2D" parent="TurnHandler/P1G/GridContainer"]
+script = ExtResource("3_iywne")
 
 [node name="pName" type="Label" parent="TurnHandler/P1G"]
 offset_left = 140.0

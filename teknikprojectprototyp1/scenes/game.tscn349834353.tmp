@@ -1,0 +1,185 @@
+[gd_scene load_steps=7 format=3 uid="uid://dfol304vf38b7"]
+
+[ext_resource type="Script" uid="uid://cvw2sg0y2m6e1" path="res://code/game/action_handler.gd" id="2_lbhrr"]
+[ext_resource type="Script" uid="uid://d4n58ctcbe3" path="res://code/game/turn_handler.gd" id="2_yqjtg"]
+[ext_resource type="Script" uid="uid://8036owrisytb" path="res://code/game/interactions.gd" id="3_lnu2h"]
+[ext_resource type="Script" uid="uid://jm3hfebbiufq" path="res://code/game/map_selector.gd" id="4_lbhrr"]
+
+[sub_resource type="Theme" id="Theme_lnu2h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lbhrr"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 0)
+
+[node name="Game" type="Node2D"]
+position = Vector2(-34, 0)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_right = 43.0
+offset_bottom = 43.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="UI" type="Control" parent="CenterContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+
+[node name="EndTurn" type="Button" parent="CenterContainer/UI"]
+layout_mode = 0
+offset_left = 548.0
+offset_top = 523.0
+offset_right = 634.0
+offset_bottom = 611.0
+text = "END"
+
+[node name="StartTurn" type="Button" parent="CenterContainer/UI"]
+layout_mode = 0
+offset_left = 548.0
+offset_top = 523.0
+offset_right = 634.0
+offset_bottom = 611.0
+text = "START"
+
+[node name="TurnsLeft" type="Label" parent="CenterContainer/UI"]
+layout_mode = 0
+offset_left = 539.0
+offset_top = 5.0
+offset_right = 642.0
+offset_bottom = 88.0
+theme_override_font_sizes/font_size = 45
+text = "300"
+horizontal_alignment = 1
+
+[node name="PActions" type="Label" parent="CenterContainer/UI"]
+layout_mode = 0
+offset_left = 547.0
+offset_top = 464.0
+offset_right = 637.0
+offset_bottom = 515.0
+theme_override_font_sizes/font_size = 30
+text = "?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TurnHandler" type="Node" parent="."]
+script = ExtResource("2_yqjtg")
+
+[node name="P2G" type="Node2D" parent="TurnHandler"]
+z_index = 1
+z_as_relative = false
+position = Vector2(-34, 0)
+script = ExtResource("2_lbhrr")
+
+[node name="GridContainer" type="Panel" parent="TurnHandler/P2G"]
+clip_contents = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 641.0
+offset_top = 25.0
+offset_right = 1182.0
+offset_bottom = 635.0
+grow_horizontal = 0
+theme = SubResource("Theme_lnu2h")
+theme_override_styles/panel = SubResource("StyleBoxFlat_lbhrr")
+metadata/GridPosition = Vector2(1.415, 15.915)
+metadata/Player = 2
+
+[node name="pName" type="Label" parent="TurnHandler/P2G"]
+offset_left = 744.0
+offset_top = 4.0
+offset_right = 1077.0
+offset_bottom = 27.0
+text = "PLAYER 2"
+horizontal_alignment = 1
+
+[node name="P1G" type="Node2D" parent="TurnHandler"]
+position = Vector2(-34, 0)
+
+[node name="GridContainer" type="Panel" parent="TurnHandler/P1G"]
+clip_contents = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 41.0
+offset_top = 24.0
+offset_right = 582.0
+offset_bottom = 634.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_lnu2h")
+theme_override_styles/panel = SubResource("StyleBoxFlat_lbhrr")
+metadata/GridPosition = Vector2(-11.01, 16.915)
+metadata/Player = 1
+
+[node name="pName" type="Label" parent="TurnHandler/P1G"]
+offset_left = 140.0
+offset_top = 4.0
+offset_right = 473.0
+offset_bottom = 27.0
+text = "PLAYER 1"
+horizontal_alignment = 1
+
+[node name="MapSelector" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_lbhrr")
+
+[node name="GridContainer" type="GridContainer" parent="MapSelector"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 7.0
+offset_right = 1191.0
+offset_bottom = 656.0
+columns = 6
+
+[node name="TemplateButton" type="Button" parent="MapSelector/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "TEMPLATE"
+
+[node name="Choosing" type="Label" parent="MapSelector"]
+layout_mode = 0
+offset_left = 872.0
+offset_top = 606.0
+offset_right = 1181.0
+offset_bottom = 648.0
+theme_override_font_sizes/font_size = 30
+text = "PLAYER IS CHOOSING"
+
+[node name="Interactions" type="ScrollContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 571.0
+offset_top = 85.0
+offset_right = 653.0
+offset_bottom = 493.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 3
+script = ExtResource("3_lnu2h")
+
+[node name="Container" type="VBoxContainer" parent="Interactions"]
+layout_direction = 2
+layout_mode = 2
+
+[node name="Template" type="Button" parent="Interactions/Container"]
+layout_mode = 2
+text = "NAME"

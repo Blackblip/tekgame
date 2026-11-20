@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=4 uid="uid://b5vvindcxsucv"]
+[gd_scene load_steps=11 format=4 uid="uid://b5vvindcxsucv"]
 
 [ext_resource type="Texture2D" uid="uid://w5ojjvl7njsx" path="res://Assets/sprites/cloudTest.png" id="2_pmgx0"]
-[ext_resource type="Script" uid="uid://bqfeff63m5idh" path="res://code/game/highlighter.gd" id="4_3llhl"]
+[ext_resource type="Script" uid="uid://bqfeff63m5idh" path="res://code/game/hover_highlighter.gd" id="4_3llhl"]
 [ext_resource type="Texture2D" uid="uid://indsm7dn7det" path="res://Assets/sprites/Sprite-0002.png" id="4_urn7h"]
-[ext_resource type="Script" path="res://code/game/request_interaction.gd" id="4_y6gbf"]
+[ext_resource type="Script" uid="uid://c1hied3jlh0aq" path="res://code/game/request_interaction.gd" id="4_y6gbf"]
 [ext_resource type="Texture2D" uid="uid://1fkk3ltyl0ci" path="res://Assets/sprites/White_Cloud_1.png" id="5_ufo47"]
+[ext_resource type="Script" uid="uid://c3yoa0fr1plrk" path="res://code/game/select_highlight.gd" id="6_pmgx0"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3llhl"]
 texture = ExtResource("5_ufo47")
@@ -38,6 +39,10 @@ tile_map_data = PackedByteArray("AAABABcAAwAAAAAAAAACABcAAwAAAAAAAAADABcAAwAAAAA
 tile_set = SubResource("TileSet_p57ef")
 script = ExtResource("4_y6gbf")
 
-[node name="TileMapLayer" type="TileMapLayer" parent="."]
+[node name="HoverHighlight" type="TileMapLayer" parent="."]
 z_index = 1
 script = ExtResource("4_3llhl")
+
+[node name="SelectedHighlight" type="TileMapLayer" parent="."]
+z_index = 1
+script = ExtResource("6_pmgx0")

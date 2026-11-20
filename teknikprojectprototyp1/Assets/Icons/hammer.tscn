@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b2pxlmvb5owls"]
+
+[ext_resource type="Texture2D" uid="uid://mfqulfbc2sxf" path="res://Assets/sprites/Hammerplaceholder.png" id="1_j35ow"]
+
+[node name="Hammer" type="Sprite2D"]
+texture = ExtResource("1_j35ow")
