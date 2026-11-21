@@ -172,10 +172,7 @@ func start_turn():
 	$P2G.queue_redraw()
 	$"../Interactions".update_scroll(null)
 	$"../Interactions".showorhide(true)
-	for i in $"../Interactions/Container".get_children():
-		print(i.visible)
-	print($"../Interactions/Container".visible)
-	print($"../Interactions".visible)
+	$"../Interactions"._return_to_main()
 	
 	match current_turn:
 		Turn.PLAYER1:

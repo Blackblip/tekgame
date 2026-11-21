@@ -17,4 +17,23 @@ var buildings = {
 		"ActionCost": 1,
 		"BuildDuration": 1,
 	},
+	"MissileSilo": {
+		"Name": "MissileSilo",
+		"Path": "res://Assets/buildings/MissileSilo.tscn",
+		"IconPath": "res://Assets/sprites/missilesilo.png",
+		"ActionBonus": 0,
+		"ActionCost": 4,
+		"BuildDuration": 1,
+	},
+}
+var offensive_actions = {
+	"Missle": {
+		"Type": "Bomb",
+		"Name": "Missile",
+		"IconPath": "res://Assets/sprites/missilesilo.png",
+		"Path": "res://Assets/buildings/MissileSilo.tscn",
+		"Needed_building": "MissileSilo",
+		"ActionCost": 2,
+		"Size": 1,
+	},
 }

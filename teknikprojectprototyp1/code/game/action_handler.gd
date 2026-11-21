@@ -34,9 +34,7 @@ func perform_scheduled_actions():
 		var aa = schedule[a]
 		if aa.Type == "Build":
 			if aa.Turns_left > 0:
-				print("Schedule:", a, " Turns left:", aa.Turns_left)
 				aa.Turns_left -= 1
-				print("After decrement:", aa.Turns_left)
 				if aa.Turns_left != 0:
 					continue
 			
@@ -86,6 +84,10 @@ func schedule_build(building, tile_pos):
 		else:
 			MatchSettings.actionsLeftP1 -= build_data.ActionCost
 			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP1)
+			if MatchSettings.actionsLeftP1 == 0:
+				$"../../Interactions".building = null
+				$GridContainer/grid/HoverHighlight.build_mode = false
+				$GridContainer/grid/HoverHighlight.queue_redraw()
 	elif player == 2:
 		if !Configs.buildable_tiles.has(MatchSettings.grid_data_p2[str(tile_pos)].tileType):
 			return
@@ -100,6 +102,10 @@ func schedule_build(building, tile_pos):
 		else:
 			MatchSettings.actionsLeftP2 -= build_data.ActionCost
 			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP2)
+			if MatchSettings.actionsLeftP2 == 0:
+				$"../../Interactions".building = null
+				$GridContainer/grid/HoverHighlight.build_mode = false
+				$GridContainer/grid/HoverHighlight.queue_redraw()
 	
 	var hammer_scene = load("res://Assets/Icons/hammer.tscn")
 	var hammer_instance = hammer_scene.instantiate()

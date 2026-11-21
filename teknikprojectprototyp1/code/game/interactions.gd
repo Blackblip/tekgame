@@ -1,19 +1,24 @@
 extends Node
 @onready var container = $Container
 @onready var scroll = $"."
-@onready var tempButton = $Container/Template
+@onready var tempButton = $Template
 @onready var tempInfoUI = $"../CenterContainer/UI/Information/VContainer/Template"
-@onready var cancelButton = $Container/Cancel
 
 var selected_tile
 var selectEnable = true
 var building
 
 func _ready():
+	$Main/Expansive.pressed.connect(_building_category_show.bind())
+	$Main/Offensive.pressed.connect(_offensive_category_show.bind())
 	tempButton.visible = false
-	_instansiate_buttons()
 	showorhide(false)
-	cancelButton.pressed.connect(cancel.bind())
+	for i in $".".get_children():
+		for o in i.get_children():
+			if o.name == "Return":
+				o.pressed.connect(_return_to_main.bind())
+			if o.name == "Cancel":
+				o.pressed.connect(cancel.bind())
 func cancel():
 	$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".build_mode = false
 	$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".build_mode = false
@@ -49,8 +54,6 @@ func show_actions_for_tile(tile_pos, player):
 func cleanse_info_ui():
 	for i in $"../CenterContainer/UI/Information/VContainer".get_children():
 		if i.name != "Template":
-			if i.name == "Cancel":
-				continue
 			i.queue_free()
 func dupe_info_ui(text):
 	var newUI = tempInfoUI.duplicate()
@@ -83,7 +86,6 @@ func update_scroll(tile_data):
 		$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
 	elif $"../TurnHandler".current_turn == 1:
 		$"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight".queue_redraw()
-
 func showorhide(boolean):
 	building = null
 	if boolean == true:
@@ -100,17 +102,75 @@ func showorhide(boolean):
 	elif $"../TurnHandler".current_turn == 1:
 		$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".build_mode = false
 		$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false
-func _instansiate_buttons():
+func _return_to_main():
+	cleanse_info_ui()
+	selected_tile = null
+	$"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight".queue_redraw()
+	$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
+	
+	$Expansive.visible = false
+	$Defensive.visible = false
+	$Offensive.visible = false
+	$Main.visible = true
+	
+	building = null
+	if !$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight":
+		return
+	if !$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight":
+		return
+	$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".build_mode = false
+	$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".build_mode = false
+	$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".cancel_mode = false
+	$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false
+func _building_category_show():
+	cleanse_info_ui()
+	selected_tile = null
+	$"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight".queue_redraw()
+	$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
+	
+	$Expansive.visible = true
+	$Defensive.visible = false
+	$Offensive.visible = false
+	$Main.visible = false
+	for i in $Expansive.get_children():
+		if i.name != "Cancel" and i.name != "Return":
+			i.queue_free()
 	for i in Configs.buildings:
 		var building_data = Configs.buildings[i]
+		if $Expansive.find_child(building_data.Name):
+			continue
 		var newButton: TextureButton = tempButton.duplicate()
 		newButton.texture_normal = load(building_data.IconPath)
-		$Container.add_child(newButton)
+		$Expansive.add_child(newButton)
 		newButton.name = building_data.Name
 		newButton.visible = true
 		newButton.pressed.connect(_build.bind(building_data))
+func _offensive_category_show():
+	cleanse_info_ui()
+	selected_tile = null
+	$"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight".queue_redraw()
+	$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
+	
+	$Expansive.visible = false
+	$Defensive.visible = false
+	$Offensive.visible = true
+	$Main.visible = false
+	for i in $Offensive.get_children():
+		if i.name != "Cancel" and i.name != "Return":
+			i.queue_free()
+	for i in Configs.offensive_actions:
+		var offensive_data = Configs.offensive_actions[i]
+		var newButton: TextureButton = tempButton.duplicate()
+		newButton.texture_normal = load(offensive_data.IconPath)
+		$Offensive.add_child(newButton)
+		newButton.name = offensive_data.Name
+		newButton.visible = true
+		newButton.pressed.connect(_offensive.bind(offensive_data))
 
+func _offensive(offensive_data):
+	print(offensive_data)
 func _build(build_data):
+	cleanse_info_ui()
 	print(build_data.Name)
 	selected_tile = null
 	if $"../TurnHandler".current_turn == 0:
@@ -127,6 +187,7 @@ func _build(build_data):
 			$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false
 		return
 	building = build_data.Name
+	dupe_info_ui(build_data.Name)
 	if $"../TurnHandler".current_turn == 0:
 		$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".build_mode = true
 		$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false

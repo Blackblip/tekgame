@@ -24,7 +24,7 @@ func _input(event):
 	tile_pos = gridLayer.local_to_map(mouse_pos)
 	
 	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			if isMyTurn == true:
 				if last_hovered == tile_pos:
 					if gridLayer.get_cell_source_id(last_hovered) != -1:

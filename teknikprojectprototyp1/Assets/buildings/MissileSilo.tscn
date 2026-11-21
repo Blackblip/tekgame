@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://0jy35qkbhrih"]
+
+[ext_resource type="Texture2D" uid="uid://80ftam8eiut1" path="res://Assets/sprites/missilesilo.png" id="1_jclt8"]
+
+[node name="MissileSilo" type="Sprite2D"]
+texture_filter = 1
+texture = ExtResource("1_jclt8")
