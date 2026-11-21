@@ -8,7 +8,7 @@ var player_grid_data: Dictionary
 
 func _ready():
 	turnHandler.turn_changed.connect(_turn_changed)
-func _turn_changed(turn):
+func _turn_changed(_turn):
 	queue_redraw()
 
 func _draw():

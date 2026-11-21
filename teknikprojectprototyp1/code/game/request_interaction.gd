@@ -28,4 +28,10 @@ func _input(event):
 			if isMyTurn == true:
 				if last_hovered == tile_pos:
 					if gridLayer.get_cell_source_id(last_hovered) != -1:
-						$"../../../../Interactions".show_actions_for_tile(tile_pos, player)
+						if $"../../../../Interactions".building == null:
+							$"../../../../Interactions".show_actions_for_tile(tile_pos, player)
+						else:
+							if $"../../../../Interactions".building == "Cancel":
+								$"../..".cancel_action(tile_pos)
+								return
+							$"../..".schedule_build($"../../../../Interactions".building, tile_pos)

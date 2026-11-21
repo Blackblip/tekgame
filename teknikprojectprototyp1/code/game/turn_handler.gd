@@ -38,6 +38,7 @@ func prepare_grid_data():
 			"connectedBuildings" : {}, 
 			"tileType" : tileType,
 			"tile_pos" : cell,
+			"tile_id" : str(cell.x) + "_" + str(cell.y),
 			"scheduled" : false,
 		}
 		MatchSettings.grid_data_p1_p2_perspective[str(cell)] = {
@@ -57,6 +58,7 @@ func prepare_grid_data():
 			"connectedBuildings" : {}, 
 			"tileType" : tileType,
 			"tile_pos" : cell,
+			"tile_id" : str(cell.x) + "_" + str(cell.y),
 			"scheduled" : false
 		}
 		MatchSettings.grid_data_p2_p1_perspective[str(cell)] = {
@@ -108,6 +110,7 @@ func prepare_turn():
 	if gameGoing == false:
 		return
 	
+	$"../Interactions".showorhide(false)
 	isPrep = true
 	turn_changed.emit("Prep")
 	
@@ -145,6 +148,8 @@ func next_turn():
 		return
 	loop_count += 1
 	if loop_count >= 3:
+		$P1G.perform_scheduled_actions()
+		$P2G.perform_scheduled_actions()
 		turns_left = turns_left - 1
 		MatchSettings.turns_left = turns_left
 		loop_count = 1
@@ -166,6 +171,11 @@ func start_turn():
 	$P1G.queue_redraw()
 	$P2G.queue_redraw()
 	$"../Interactions".update_scroll(null)
+	$"../Interactions".showorhide(true)
+	for i in $"../Interactions/Container".get_children():
+		print(i.visible)
+	print($"../Interactions/Container".visible)
+	print($"../Interactions".visible)
 	
 	match current_turn:
 		Turn.PLAYER1:

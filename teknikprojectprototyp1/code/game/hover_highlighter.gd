@@ -8,6 +8,8 @@ var player: int
 var player_grid_data: Dictionary
 
 var last_hovered
+var build_mode
+var cancel_mode
 
 func _ready():
 	print("here")
@@ -50,8 +52,13 @@ func _draw():
 		local_pos - tile_size / 2,
 		tile_size
 	)
-	var tileType = player_grid_data.get(str(last_hovered), {}).get("tileType", "Unknown")
-	if Configs.buildable_tiles.has(tileType):
-		draw_rect(rect, Color.GREEN, false, 2.0)
-	else:
+	if cancel_mode == true:
 		draw_rect(rect, Color.RED, false, 2.0)
+	if build_mode == true:
+		var tileType = player_grid_data.get(str(last_hovered), {}).get("tileType", "Unknown")
+		if Configs.buildable_tiles.has(tileType):
+			draw_rect(rect, Color.GREEN, false, 2.0)
+		else:
+			draw_rect(rect, Color.RED, false, 2.0)
+	if build_mode == false and cancel_mode == false:
+		draw_rect(rect, Color.BLACK, false, 2.0)

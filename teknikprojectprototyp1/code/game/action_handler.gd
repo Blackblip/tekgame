@@ -9,6 +9,9 @@ var icons = [
 var schedule = {
 	
 }
+var scheduled_recap = {
+	
+}
 
 func _ready():
 	turnHandler.turn_changed.connect(_turn_changed)
@@ -20,7 +23,6 @@ func _turn_changed(turn):
 	if str(turn) == "Prep":
 		for i in icons:
 			i.visible = false
-		perform_scheduled_actions()
 	if str(turn) == str(player-1):
 		for i in icons:
 			i.visible = true
@@ -31,6 +33,13 @@ func perform_scheduled_actions():
 	for a in schedule:
 		var aa = schedule[a]
 		if aa.Type == "Build":
+			if aa.Turns_left > 0:
+				print("Schedule:", a, " Turns left:", aa.Turns_left)
+				aa.Turns_left -= 1
+				print("After decrement:", aa.Turns_left)
+				if aa.Turns_left != 0:
+					continue
+			
 			if player == 1:
 				MatchSettings.grid_data_p1[str(aa.tile_pos)].building = aa.Building
 				MatchSettings.grid_data_p1[str(aa.tile_pos)].scheduled = false
@@ -45,18 +54,51 @@ func perform_scheduled_actions():
 					icons.erase(i)
 	for i in completed:
 		schedule.erase(i)
+func cancel_action(tile_pos):
+	if schedule.has(str(tile_pos)):
+		var building_data = Configs.buildings[schedule[str(tile_pos)].Building]
+		if player == 1:
+			MatchSettings.actionsLeftP1 += building_data.ActionCost
+			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP1)
+		elif player == 2:
+			MatchSettings.actionsLeftP2 += building_data.ActionCost
+			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP2)
+		schedule.erase(str(tile_pos))
+		for i in icons:
+			if i.name == str(tile_pos):
+				i.queue_free()
+				icons.erase(i)
 func schedule_build(building, tile_pos):
+	var build_data = Configs.buildings[building]
 	if player == 1:
-		if building.ActionCost > MatchSettings.actionsLeftP1:
+		if !Configs.buildable_tiles.has(MatchSettings.grid_data_p1[str(tile_pos)].tileType):
+			return
+		if MatchSettings.grid_data_p1[str(tile_pos)].building != "":
+			$"../../Interactions".building = null
+			$GridContainer/grid/HoverHighlight.build_mode = false
+			return
+		if MatchSettings.grid_data_p1[str(tile_pos)].scheduled == true:
+			return
+		if build_data.ActionCost > MatchSettings.actionsLeftP1:
+			$"../../Interactions".building = null
+			$GridContainer/grid/HoverHighlight.build_mode = false
 			return
 		else:
-			MatchSettings.actionsLeftP1 -= building.ActionCost
+			MatchSettings.actionsLeftP1 -= build_data.ActionCost
 			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP1)
 	elif player == 2:
-		if building.ActionCost > MatchSettings.actionsLeftP2:
+		if !Configs.buildable_tiles.has(MatchSettings.grid_data_p2[str(tile_pos)].tileType):
+			return
+		if MatchSettings.grid_data_p2[str(tile_pos)].building != "":
+			return
+		if MatchSettings.grid_data_p2[str(tile_pos)].scheduled == true:
+			return
+		if build_data.ActionCost > MatchSettings.actionsLeftP2:
+			$"../../Interactions".building = null
+			$GridContainer/grid/HoverHighlight.build_mode = false
 			return
 		else:
-			MatchSettings.actionsLeftP2 -= building.ActionCost
+			MatchSettings.actionsLeftP2 -= build_data.ActionCost
 			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP2)
 	
 	var hammer_scene = load("res://Assets/Icons/hammer.tscn")
@@ -74,7 +116,8 @@ func schedule_build(building, tile_pos):
 	
 	schedule[str(tile_pos)] = {
 		"Type": "Build",
-		"Building": building.Name,
+		"Building": build_data.Name,
 		"tile_pos": tile_pos,
 		"icon_instance": hammer_instance,
+		"Turns_left": build_data.BuildDuration
 	}

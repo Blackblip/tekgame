@@ -18,6 +18,7 @@ animations = [{
 }]
 
 [node name="Hammer" type="AnimatedSprite2D"]
+texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_umlsg")
 autoplay = "default"
-frame_progress = 0.174711
+frame_progress = 0.768103

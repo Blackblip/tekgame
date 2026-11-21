@@ -15,12 +15,6 @@ var buildings = {
 		"IconPath": "res://Assets/sprites/Big_City_Building_1.png",
 		"ActionBonus": 1,
 		"ActionCost": 1,
-	},
-	"Town2": {
-		"Name": "Town2",
-		"Path": "res://Assets/buildings/Town.tscn",
-		"IconPath": "res://Assets/sprites/Big_City_Building_1.png",
-		"ActionBonus": 1,
-		"ActionCost": 1,
+		"BuildDuration": 1,
 	},
 }
