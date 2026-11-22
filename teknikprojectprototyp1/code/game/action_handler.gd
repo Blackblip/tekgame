@@ -52,20 +52,113 @@ func perform_scheduled_actions():
 					icons.erase(i)
 	for i in completed:
 		schedule.erase(i)
+
 func cancel_action(tile_pos):
-	if schedule.has(str(tile_pos)):
-		var building_data = Configs.buildings[schedule[str(tile_pos)].Building]
+	var key = str(tile_pos)
+
+	if not schedule.has(key):
+		return
+
+	var action_data = schedule[key]
+	var action_cost = 0
+
+	# Determine action cost
+	if action_data.Type == "Build":
+		var building_data = Configs.buildings[action_data.Building]
+		action_cost = building_data.ActionCost
+
+	elif action_data.Type == "Offensive":
+		var offensive_data = Configs.offensive_actions[action_data.Action]
+		action_cost = offensive_data.ActionCost
+
+	else:
+		return
+
+	# Refund action points
+	if player == 1:
+		MatchSettings.actionsLeftP1 += action_cost
+		$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP1)
+
+	elif player == 2:
+		MatchSettings.actionsLeftP2 += action_cost
+		$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP2)
+	if action_data.Type == "Build":
 		if player == 1:
-			MatchSettings.actionsLeftP1 += building_data.ActionCost
-			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP1)
+			MatchSettings.grid_data_p1[key].scheduled = false
 		elif player == 2:
-			MatchSettings.actionsLeftP2 += building_data.ActionCost
+			MatchSettings.grid_data_p2[key].scheduled = false
+	var icon_instance = action_data.get("icon_instance")
+	if is_instance_valid(icon_instance):
+		icon_instance.queue_free()
+		icons.erase(icon_instance)
+	schedule.erase(key)
+
+
+func schedule_offensive(action, tile_pos):
+	print("here")
+	var offensive_data = Configs.offensive_actions[action]
+	
+	var foundBuilding
+	var amountOfBuildings = 0
+	var amountAlreadyScheduled = 0
+	for i in schedule:
+		var data = schedule[i]
+		if data.Type == "Offensive":
+			if data.Action == offensive_data.Name:
+				amountAlreadyScheduled += 1
+	for i in $"./GridContainer/BUILDINGS".get_children():
+		if i.get_meta("Building") == offensive_data.Needed_building:
+			foundBuilding = true
+			amountOfBuildings += 1
+	print(amountOfBuildings, " ", amountAlreadyScheduled)
+	if foundBuilding != true:
+		return
+	if amountAlreadyScheduled >= amountOfBuildings:
+		return
+	if player == 1:
+		if offensive_data.ActionCost > MatchSettings.actionsLeftP1:
+			$"../../Interactions".offensive = null
+			return
+		else:
+			MatchSettings.actionsLeftP1 -= offensive_data.ActionCost
+			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP1)
+	elif player == 2:
+		if offensive_data.ActionCost > MatchSettings.actionsLeftP2:
+			$"../../Interactions".offensive = null
+			return
+		else:
+			MatchSettings.actionsLeftP2 -= offensive_data.ActionCost
 			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP2)
-		schedule.erase(str(tile_pos))
-		for i in icons:
-			if i.name == str(tile_pos):
-				i.queue_free()
-				icons.erase(i)
+
+	var own_grid: TileMapLayer = $"./GridContainer/grid"
+	var target_grid: TileMapLayer
+
+	if player == 1:
+		target_grid = $"../P2G/GridContainer/grid"
+	else:
+		target_grid = $"../P1G/GridContainer/grid"
+
+	var missile_scene = load("res://Assets/Icons/missle.tscn")
+	var missile_instance = missile_scene.instantiate()
+
+	own_grid.add_child(missile_instance)
+
+	var global_pos = target_grid.to_global(
+		target_grid.map_to_local(tile_pos)
+	)
+	missile_instance.position = own_grid.to_local(global_pos)
+
+	missile_instance.name = str(tile_pos)
+	icons.append(missile_instance)
+
+	schedule[str(tile_pos)] = {
+		"Type": "Offensive",
+		"Action": offensive_data.Name,
+		"tile_pos": tile_pos,
+		"icon_instance": missile_instance,
+		"Turns_left": offensive_data.Travel_time
+	}
+
 func schedule_build(building, tile_pos):
 	var build_data = Configs.buildings[building]
 	if player == 1:

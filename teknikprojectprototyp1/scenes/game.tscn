@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dfol304vf38b7"]
+[gd_scene load_steps=14 format=3 uid="uid://dfol304vf38b7"]
 
 [ext_resource type="Script" uid="uid://cvw2sg0y2m6e1" path="res://code/game/action_handler.gd" id="2_lbhrr"]
 [ext_resource type="Script" uid="uid://d4n58ctcbe3" path="res://code/game/turn_handler.gd" id="2_yqjtg"]
@@ -9,6 +9,8 @@
 [ext_resource type="Texture2D" uid="uid://xlfsdnkdfpgl" path="res://Assets/sprites/Big_City_Building_1.png" id="6_p57ef"]
 [ext_resource type="Texture2D" uid="uid://c0qcrcu45nprk" path="res://Assets/sprites/CancelSprite.png" id="6_u5sy4"]
 [ext_resource type="Texture2D" uid="uid://dtqawh2usbejr" path="res://Assets/sprites/expansionsprite.png" id="8_gee14"]
+[ext_resource type="Texture2D" uid="uid://cfrl3tu0x5t3g" path="res://Assets/sprites/missileplaceholder.png" id="9_kvpfn"]
+[ext_resource type="Texture2D" uid="uid://bmg4twqsv5buy" path="res://Assets/sprites/shieldorsum.png" id="10_dinhu"]
 
 [sub_resource type="Theme" id="Theme_lnu2h"]
 
@@ -93,6 +95,7 @@ visible = false
 layout_mode = 2
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="TurnHandler" type="Node" parent="."]
 script = ExtResource("2_yqjtg")
@@ -104,7 +107,6 @@ position = Vector2(-34, 0)
 script = ExtResource("2_lbhrr")
 
 [node name="GridContainer" type="Panel" parent="TurnHandler/P2G"]
-clip_contents = true
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -135,7 +137,6 @@ position = Vector2(-34, 0)
 script = ExtResource("2_lbhrr")
 
 [node name="GridContainer" type="Panel" parent="TurnHandler/P1G"]
-clip_contents = true
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -295,14 +296,14 @@ stretch_mode = 0
 texture_filter = 1
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-texture_normal = ExtResource("6_p57ef")
+texture_normal = ExtResource("9_kvpfn")
 stretch_mode = 0
 
 [node name="Defensive" type="TextureButton" parent="Interactions/Main"]
 texture_filter = 1
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-texture_normal = ExtResource("6_p57ef")
+texture_normal = ExtResource("10_dinhu")
 stretch_mode = 0
 
 [node name="Template" type="TextureButton" parent="Interactions"]

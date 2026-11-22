@@ -1,60 +1,75 @@
+
 extends Node
-@onready var container = $Container
-@onready var scroll = $"."
+
+@onready var scroll = self
 @onready var tempButton = $Template
 @onready var tempInfoUI = $"../CenterContainer/UI/Information/VContainer/Template"
 
+@onready var p1_hover = $"../TurnHandler/P1G/GridContainer/grid/HoverHighlight"
+@onready var p2_hover = $"../TurnHandler/P2G/GridContainer/grid/HoverHighlight"
+
+@onready var p1_selected = $"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight"
+@onready var p2_selected = $"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight"
+
 var selected_tile
+var selected_grid: TileMapLayer
+
 var selectEnable = true
 var building
+var offensive
 
 func _ready():
 	$Main/Expansive.pressed.connect(_building_category_show.bind())
 	$Main/Offensive.pressed.connect(_offensive_category_show.bind())
+
 	tempButton.visible = false
 	showorhide(false)
-	for i in $".".get_children():
+
+	for i in get_children():
+		print(i.name)
 		for o in i.get_children():
+			print(o.name)
 			if o.name == "Return":
 				o.pressed.connect(_return_to_main.bind())
 			if o.name == "Cancel":
 				o.pressed.connect(cancel.bind())
-func cancel():
-	$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".build_mode = false
-	$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".build_mode = false
-	var turn = $"../TurnHandler".current_turn
-	if building == "Cancel":
-		print("not here")
-		if turn == 0:
-			$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false
-		elif turn == 1:
-			$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".cancel_mode = false
-		building = null
-	elif building != "Cancel":
-		print("here")
-		if turn == 0:
-			$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = true
-		elif turn == 1:
-			$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".cancel_mode = true
-		building = "Cancel"
 
-func show_actions_for_tile(tile_pos, player):
+func clear_selection():
+	selected_tile = null
+	selected_grid = null
+	
+	if p1_selected == null:
+		p1_selected = $"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight"
+		return
+	if p2_selected == null:
+		p2_selected = $"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight"
+		return
+	
+	p1_selected.queue_redraw()
+	p2_selected.queue_redraw()
+
+
+func show_actions_for_tile(tile_pos, player, grid):
 	var tile_data
+
 	if player == 1:
-		tile_data = MatchSettings.grid_data_p1[str(tile_pos)]
-		if tile_data == null:
-			return
-		update_scroll(tile_data)
+		tile_data = MatchSettings.grid_data_p1.get(str(tile_pos))
 	elif player == 2:
-		tile_data = MatchSettings.grid_data_p2[str(tile_pos)]
-		if tile_data == null:
-			return
-		update_scroll(tile_data)
+		tile_data = MatchSettings.grid_data_p2.get(str(tile_pos))
+
+	if tile_data == null:
+		return
+
+	selected_grid = grid
+	update_scroll(tile_data)
+
 
 func cleanse_info_ui():
 	for i in $"../CenterContainer/UI/Information/VContainer".get_children():
 		if i.name != "Template":
 			i.queue_free()
+
+
 func dupe_info_ui(text):
 	var newUI = tempInfoUI.duplicate()
 	$"../CenterContainer/UI/Information/VContainer".add_child(newUI)
@@ -62,99 +77,132 @@ func dupe_info_ui(text):
 	newUI.name = str(text)
 	newUI.text = str(text)
 
+
 func update_scroll(tile_data):
 	cleanse_info_ui()
+
 	if selectEnable == false:
 		return
+
 	if !tile_data:
-		selected_tile = null
-		cleanse_info_ui()
+		clear_selection()
 		return
+
 	selected_tile = tile_data.tile_pos
+
+	p1_selected.queue_redraw()
+	p2_selected.queue_redraw()
+
 	dupe_info_ui(tile_data.tile_id)
 	dupe_info_ui(tile_data.tileType)
+
 	if tile_data.building != "":
 		dupe_info_ui(tile_data.building)
+
 	if tile_data.scheduled == true:
 		if $"../TurnHandler".current_turn == 0:
 			var Building = $"../TurnHandler/P1G".schedule[str(tile_data.tile_pos)]
 			dupe_info_ui(Building.Turns_left)
+
 		elif $"../TurnHandler".current_turn == 1:
 			var Building = $"../TurnHandler/P2G".schedule[str(tile_data.tile_pos)]
 			dupe_info_ui(Building.Turns_left)
-	if $"../TurnHandler".current_turn == 0:
-		$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
-	elif $"../TurnHandler".current_turn == 1:
-		$"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight".queue_redraw()
+
+func set_hover_modes(build_mode_value, cancel_mode_value):
+	if p1_hover == null:
+		p1_hover = $"../TurnHandler/P1G/GridContainer/grid/HoverHighlight"
+		return
+	if p2_hover == null:
+		p2_hover = $"../TurnHandler/P2G/GridContainer/grid/HoverHighlight"
+		return
+	
+	p1_hover.build_mode = build_mode_value
+	p2_hover.build_mode = build_mode_value
+
+	p1_hover.cancel_mode = cancel_mode_value
+	p2_hover.cancel_mode = cancel_mode_value
+
+	p1_hover.queue_redraw()
+	p2_hover.queue_redraw()
+
+func cancel():
+	clear_selection()
+	cleanse_info_ui()
+	dupe_info_ui("Cancel")
+	if offensive != null:
+		offensive = null
+		building = "Cancel"
+		set_hover_modes(false, true)
+		return
+	if building == "Cancel":
+		cleanse_info_ui()
+		building = null
+		set_hover_modes(false, false)
+	else:
+		building = "Cancel"
+		set_hover_modes(false, true)
+
 func showorhide(boolean):
 	building = null
-	if boolean == true:
-		$".".visible = true
-	else:
-		$".".visible = false
-	if !$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight":
-		return
-	if !$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight":
-		return
-	if $"../TurnHandler".current_turn == 0:
-			$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".build_mode = false
-			$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false
-	elif $"../TurnHandler".current_turn == 1:
-		$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".build_mode = false
-		$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false
+	offensive = null
+	$".".visible = boolean
+	set_hover_modes(false, false)
+
 func _return_to_main():
 	cleanse_info_ui()
-	selected_tile = null
-	$"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight".queue_redraw()
-	$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
-	
+	clear_selection()
 	$Expansive.visible = false
 	$Defensive.visible = false
 	$Offensive.visible = false
 	$Main.visible = true
-	
 	building = null
-	if !$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight":
-		return
-	if !$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight":
-		return
-	$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".build_mode = false
-	$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".build_mode = false
-	$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".cancel_mode = false
-	$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false
+	offensive = null
+	set_hover_modes(false, false)
+
 func _building_category_show():
 	cleanse_info_ui()
-	selected_tile = null
-	$"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight".queue_redraw()
-	$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
-	
+	clear_selection()
+
+	offensive = null
+	building = null
+
 	$Expansive.visible = true
 	$Defensive.visible = false
 	$Offensive.visible = false
 	$Main.visible = false
+
+	set_hover_modes(false, false)
+
 	for i in $Expansive.get_children():
 		if i.name != "Cancel" and i.name != "Return":
 			i.queue_free()
+
 	for i in Configs.buildings:
 		var building_data = Configs.buildings[i]
+
 		if $Expansive.find_child(building_data.Name):
 			continue
+
 		var newButton: TextureButton = tempButton.duplicate()
 		newButton.texture_normal = load(building_data.IconPath)
+
 		$Expansive.add_child(newButton)
+
 		newButton.name = building_data.Name
 		newButton.visible = true
+
 		newButton.pressed.connect(_build.bind(building_data))
+
 func _offensive_category_show():
 	cleanse_info_ui()
-	selected_tile = null
-	$"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight".queue_redraw()
-	$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
-	
+	clear_selection()
+	building = null
+	offensive = null
 	$Expansive.visible = false
 	$Defensive.visible = false
 	$Offensive.visible = true
 	$Main.visible = false
+	set_hover_modes(false, false)
 	for i in $Offensive.get_children():
 		if i.name != "Cancel" and i.name != "Return":
 			i.queue_free()
@@ -167,30 +215,36 @@ func _offensive_category_show():
 		newButton.visible = true
 		newButton.pressed.connect(_offensive.bind(offensive_data))
 
+
 func _offensive(offensive_data):
-	print(offensive_data)
+	clear_selection()
+	cleanse_info_ui()
+	building = null
+	offensive = offensive_data.Name
+	set_hover_modes(false, false)
+	dupe_info_ui(offensive_data.Name)
+	if offensive_data.Needed_building != "":
+		dupe_info_ui(str("Required building: ", offensive_data.Needed_building))
+
 func _build(build_data):
 	cleanse_info_ui()
+	clear_selection()
+
 	print(build_data.Name)
-	selected_tile = null
-	if $"../TurnHandler".current_turn == 0:
-		$"../TurnHandler/P1G/GridContainer/grid/SelectedHighlight".queue_redraw()
-	elif $"../TurnHandler".current_turn == 1:
-		$"../TurnHandler/P2G/GridContainer/grid/SelectedHighlight".queue_redraw()
+
+	offensive = null
+
 	if building == build_data.Name:
 		building = null
-		if $"../TurnHandler".current_turn == 0:
-			$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".build_mode = false
-			$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false
-		elif $"../TurnHandler".current_turn == 1:
-			$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".build_mode = false
-			$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false
+		set_hover_modes(false, false)
 		return
+
 	building = build_data.Name
+
 	dupe_info_ui(build_data.Name)
-	if $"../TurnHandler".current_turn == 0:
-		$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".build_mode = true
-		$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false
-	elif $"../TurnHandler".current_turn == 1:
-		$"../TurnHandler/P2G/GridContainer/grid/HoverHighlight".build_mode = true
-		$"../TurnHandler/P1G/GridContainer/grid/HoverHighlight".cancel_mode = false
+	dupe_info_ui(str("Cost: ", build_data.ActionCost))
+	if build_data.ActionBonus > 0:
+		dupe_info_ui(str("Actions given: ", build_data.ActionBonus))
+	dupe_info_ui(str("Duration until done: ", build_data.BuildDuration))
+
+	set_hover_modes(true, false)

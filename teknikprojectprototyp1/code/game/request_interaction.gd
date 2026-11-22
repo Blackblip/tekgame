@@ -1,37 +1,109 @@
+
 extends TileMapLayer
-@onready var player = $".".get_parent().get_meta("Player")
-@onready var gridLayer = $"."
+
+@onready var player = get_parent().get_meta("Player")
+@onready var gridLayer = self
 @onready var turnHandler = $"../../.."
+@onready var interactions = $"../../../../Interactions"
 
-var isMyTurn
+var gridLayer2: TileMapLayer
 
-func _ready():
-	turnHandler.turn_changed.connect(_turn_changed)
-func _turn_changed(turn):
-	$"../../../../Interactions".update_scroll(null)
-	var turnn = str(turn)
-	if turnn == str(player - 1):
-		isMyTurn = true
-		queue_redraw()
-	else:
-		isMyTurn = false
-		queue_redraw()
+var isMyTurn = false
 
 var tile_pos = Vector2i(-100, -100)
+var target_grid: TileMapLayer
+var target_player: int
+
+func _ready():
+	if player == 1:
+		gridLayer2 = $"../../../P2G/GridContainer/grid"
+	elif player == 2:
+		gridLayer2 = $"../../../P1G/GridContainer/grid"
+
+	turnHandler.turn_changed.connect(_turn_changed)
+
+
+func _turn_changed(turn):
+	if player == 1:
+		gridLayer2 = $"../../../P2G/GridContainer/grid"
+	elif player == 2:
+		gridLayer2 = $"../../../P1G/GridContainer/grid"
+		
+	interactions.update_scroll(null)
+
+	isMyTurn = str(turn) == str(player - 1)
+
+	queue_redraw()
+
+
+
 func _input(event):
-	var last_hovered = $HoverHighlight.last_hovered
-	var mouse_pos = gridLayer.to_local(get_global_mouse_position())
-	tile_pos = gridLayer.local_to_map(mouse_pos)
-	
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			if isMyTurn == true:
-				if last_hovered == tile_pos:
-					if gridLayer.get_cell_source_id(last_hovered) != -1:
-						if $"../../../../Interactions".building == null:
-							$"../../../../Interactions".show_actions_for_tile(tile_pos, player)
-						else:
-							if $"../../../../Interactions".building == "Cancel":
-								$"../..".cancel_action(tile_pos)
-								return
-							$"../..".schedule_build($"../../../../Interactions".building, tile_pos)
+	if not isMyTurn:
+		return
+
+	if not event is InputEventMouseButton:
+		return
+
+	if event.button_index != MOUSE_BUTTON_LEFT or not event.pressed:
+		return
+
+	var mouse_pos = get_global_mouse_position()
+
+	var own_pos = gridLayer.local_to_map(
+		gridLayer.to_local(mouse_pos)
+	)
+
+	var opponent_pos = gridLayer2.local_to_map(
+		gridLayer2.to_local(mouse_pos)
+	)
+
+	var own_has_tile = gridLayer.get_cell_source_id(own_pos) != -1
+	var opponent_has_tile = gridLayer2.get_cell_source_id(opponent_pos) != -1
+
+	# Offensive mode
+	if interactions.offensive != null:
+		if not opponent_has_tile:
+			return
+
+		target_grid = gridLayer2
+		target_player = 3 - player
+		tile_pos = opponent_pos
+
+		get_parent().get_parent().schedule_offensive(
+			interactions.offensive,
+			tile_pos
+		)
+
+		return
+
+	# Cancel mode
+	if interactions.building == "Cancel":
+		if opponent_has_tile:
+			get_parent().get_parent().cancel_action(opponent_pos)
+			return
+
+		if own_has_tile:
+			get_parent().get_parent().cancel_action(own_pos)
+
+		return
+
+	# Normal interaction
+	if not own_has_tile:
+		return
+
+	target_grid = gridLayer
+	target_player = player
+	tile_pos = own_pos
+
+	if interactions.building == null:
+		interactions.show_actions_for_tile(
+			tile_pos,
+			target_player,
+			target_grid
+		)
+
+	else:
+		get_parent().get_parent().schedule_build(
+			interactions.building,
+			tile_pos
+		)

@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://e88oj0x1ta00"]
+
+[ext_resource type="Texture2D" uid="uid://cfrl3tu0x5t3g" path="res://Assets/sprites/missileplaceholder.png" id="1_fhv12"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_phh02"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_fhv12")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Missile" type="AnimatedSprite2D"]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_phh02")
+autoplay = "default"

@@ -27,13 +27,14 @@ var buildings = {
 	},
 }
 var offensive_actions = {
-	"Missle": {
+	"Missile": {
 		"Type": "Bomb",
 		"Name": "Missile",
 		"IconPath": "res://Assets/sprites/missilesilo.png",
 		"Path": "res://Assets/buildings/MissileSilo.tscn",
 		"Needed_building": "MissileSilo",
 		"ActionCost": 2,
+		"Travel_time": 2,
 		"Size": 1,
 	},
 }
