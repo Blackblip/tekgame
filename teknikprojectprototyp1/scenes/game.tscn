@@ -1,9 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://dfol304vf38b7"]
+[gd_scene load_steps=17 format=3 uid="uid://dfol304vf38b7"]
 
 [ext_resource type="Script" uid="uid://cvw2sg0y2m6e1" path="res://code/game/action_handler.gd" id="2_lbhrr"]
 [ext_resource type="Script" uid="uid://d4n58ctcbe3" path="res://code/game/turn_handler.gd" id="2_yqjtg"]
 [ext_resource type="Script" uid="uid://breu6678utj76" path="res://code/game/building_handler.gd" id="3_iywne"]
 [ext_resource type="Script" uid="uid://8036owrisytb" path="res://code/game/interactions.gd" id="3_lnu2h"]
+[ext_resource type="Shader" uid="uid://dwmwvqgg2wprq" path="res://code/shaders/crtTV_effect.gdshader" id="4_dinhu"]
 [ext_resource type="Script" uid="uid://jm3hfebbiufq" path="res://code/game/map_selector.gd" id="4_lbhrr"]
 [ext_resource type="Texture2D" uid="uid://q6r6p0i7utfa" path="res://Assets/sprites/shittyarrow.png" id="6_0tnpc"]
 [ext_resource type="Texture2D" uid="uid://xlfsdnkdfpgl" path="res://Assets/sprites/Big_City_Building_1.png" id="6_p57ef"]
@@ -11,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://dtqawh2usbejr" path="res://Assets/sprites/expansionsprite.png" id="8_gee14"]
 [ext_resource type="Texture2D" uid="uid://cfrl3tu0x5t3g" path="res://Assets/sprites/missileplaceholder.png" id="9_kvpfn"]
 [ext_resource type="Texture2D" uid="uid://bmg4twqsv5buy" path="res://Assets/sprites/shieldorsum.png" id="10_dinhu"]
+[ext_resource type="Script" uid="uid://v5kq3s2xq8bf" path="res://code/makeVis.gd" id="13_kvuet"]
 
 [sub_resource type="Theme" id="Theme_lnu2h"]
 
@@ -21,6 +23,15 @@ border_width_top = 10
 border_width_right = 10
 border_width_bottom = 10
 border_color = Color(0, 0, 0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kvuet"]
+shader = ExtResource("4_dinhu")
+shader_parameter/curvature = 0.08
+shader_parameter/scanline_strength = 0.2
+shader_parameter/vignette_strength = 0.4
+shader_parameter/chromatic_aberration = 0.002
+shader_parameter/noise_strength = 0.01
+shader_parameter/brightness = 1.0
 
 [node name="Game" type="Node2D"]
 position = Vector2(-34, 0)
@@ -129,6 +140,7 @@ offset_left = 744.0
 offset_top = 4.0
 offset_right = 1077.0
 offset_bottom = 27.0
+mouse_filter = 0
 text = "PLAYER 2"
 horizontal_alignment = 1
 
@@ -161,6 +173,7 @@ offset_left = 140.0
 offset_top = 4.0
 offset_right = 473.0
 offset_bottom = 27.0
+mouse_filter = 0
 text = "PLAYER 1"
 horizontal_alignment = 1
 
@@ -171,6 +184,7 @@ offset_left = 7.0
 offset_top = 24.0
 offset_right = 47.0
 offset_bottom = 64.0
+mouse_filter = 2
 
 [node name="TemplateID" type="Label" parent="TurnHandler/TileIDS"]
 visible = false
@@ -199,6 +213,7 @@ offset_left = 40.0
 offset_top = 7.0
 offset_right = 1191.0
 offset_bottom = 656.0
+mouse_filter = 2
 columns = 6
 
 [node name="TemplateButton" type="Button" parent="MapSelector/GridContainer"]
@@ -335,3 +350,14 @@ custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 texture_normal = ExtResource("6_p57ef")
 stretch_mode = 0
+
+[node name="TV_EFFECT" type="ColorRect" parent="."]
+visible = false
+z_index = 4096
+material = SubResource("ShaderMaterial_kvuet")
+offset_left = -174.0
+offset_top = -146.0
+offset_right = 1392.0
+offset_bottom = 791.0
+mouse_filter = 2
+script = ExtResource("13_kvuet")

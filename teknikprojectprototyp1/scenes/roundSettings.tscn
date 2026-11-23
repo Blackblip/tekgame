@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cbvucqqcdm06w"]
+[gd_scene load_steps=11 format=3 uid="uid://cbvucqqcdm06w"]
 
 [ext_resource type="Script" uid="uid://duvipwobmu03c" path="res://code/settings/t_turns.gd" id="1_uwrxv"]
 [ext_resource type="Script" uid="uid://d31oxuneh86ha" path="res://code/settings/s_actions.gd" id="2_lnu2h"]
@@ -6,9 +6,20 @@
 [ext_resource type="Script" uid="uid://dwjhj4snxs4mg" path="res://code/settings/s_round.gd" id="4_lbhrr"]
 [ext_resource type="Script" uid="uid://ceneylnfdtye4" path="res://code/settings/p1_name.gd" id="5_0dm4v"]
 [ext_resource type="Script" uid="uid://b1eaunv1vjehe" path="res://code/settings/p2_name.gd" id="6_cmyip"]
+[ext_resource type="Shader" uid="uid://dwmwvqgg2wprq" path="res://code/shaders/crtTV_effect.gdshader" id="7_o5chg"]
+[ext_resource type="Script" uid="uid://v5kq3s2xq8bf" path="res://code/makeVis.gd" id="8_ao5n6"]
 
 [sub_resource type="Theme" id="Theme_lbhrr"]
 default_font_size = 29
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xxquo"]
+shader = ExtResource("7_o5chg")
+shader_parameter/curvature = 0.08
+shader_parameter/scanline_strength = 0.2
+shader_parameter/vignette_strength = 0.4
+shader_parameter/chromatic_aberration = 0.002
+shader_parameter/noise_strength = 0.01
+shader_parameter/brightness = 1.0
 
 [node name="Game" type="Node2D"]
 
@@ -91,3 +102,14 @@ offset_right = 328.0
 offset_bottom = 411.0
 placeholder_text = "Player Two"
 script = ExtResource("6_cmyip")
+
+[node name="TV_EFFECT" type="ColorRect" parent="."]
+visible = false
+z_index = 4096
+material = SubResource("ShaderMaterial_xxquo")
+offset_left = -174.0
+offset_top = -146.0
+offset_right = 1392.0
+offset_bottom = 791.0
+mouse_filter = 2
+script = ExtResource("8_ao5n6")
