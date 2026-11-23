@@ -1,8 +1,10 @@
-[gd_scene load_steps=9 format=4 uid="uid://0jx5xpplvu3i"]
+[gd_scene load_steps=13 format=4 uid="uid://0jx5xpplvu3i"]
 
 [ext_resource type="Texture2D" uid="uid://llgdc6hae0os" path="res://Assets/sprites/Green_grass_1.png" id="1_aj02a"]
+[ext_resource type="Texture2D" uid="uid://cw4qwavfbq1pl" path="res://Assets/sprites/failMark.png" id="2_5vgqk"]
 [ext_resource type="Texture2D" uid="uid://w5ojjvl7njsx" path="res://Assets/sprites/cloudTest.png" id="3_j5ogp"]
 [ext_resource type="Script" uid="uid://c1hied3jlh0aq" path="res://code/game/request_interaction.gd" id="3_n3usn"]
+[ext_resource type="Texture2D" uid="uid://t6itdgm0nxje" path="res://Assets/sprites/hitmark.png" id="3_tb7ee"]
 [ext_resource type="Script" uid="uid://bqfeff63m5idh" path="res://code/game/hover_highlighter.gd" id="4_n3usn"]
 [ext_resource type="Script" uid="uid://c3yoa0fr1plrk" path="res://code/game/select_highlight.gd" id="5_1m5fv"]
 
@@ -11,6 +13,18 @@ texture = ExtResource("1_aj02a")
 texture_region_size = Vector2i(25, 25)
 0:0/0 = 0
 0:0/0/custom_data_0 = "GreenGrass"
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4n2bn"]
+texture = ExtResource("2_5vgqk")
+texture_region_size = Vector2i(25, 25)
+0:0/0 = 0
+0:0/0/custom_data_0 = "FailMark"
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_o0y66"]
+texture = ExtResource("3_tb7ee")
+texture_region_size = Vector2i(25, 25)
+0:0/0 = 0
+0:0/0/custom_data_0 = "HitMark"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_y6gbf"]
 texture = ExtResource("3_j5ogp")
@@ -24,6 +38,8 @@ custom_data_layer_0/name = "tileType"
 custom_data_layer_0/type = 4
 sources/4 = SubResource("TileSetAtlasSource_y6gbf")
 sources/1 = SubResource("TileSetAtlasSource_n3usn")
+sources/11 = SubResource("TileSetAtlasSource_o0y66")
+sources/10 = SubResource("TileSetAtlasSource_4n2bn")
 
 [node name="grid" type="TileMapLayer"]
 z_as_relative = false

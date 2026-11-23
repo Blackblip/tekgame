@@ -1,11 +1,25 @@
-[gd_scene load_steps=11 format=4 uid="uid://b5vvindcxsucv"]
+[gd_scene load_steps=15 format=4 uid="uid://b5vvindcxsucv"]
 
+[ext_resource type="Texture2D" uid="uid://cw4qwavfbq1pl" path="res://Assets/sprites/failMark.png" id="1_urn7h"]
 [ext_resource type="Texture2D" uid="uid://w5ojjvl7njsx" path="res://Assets/sprites/cloudTest.png" id="2_pmgx0"]
+[ext_resource type="Texture2D" uid="uid://t6itdgm0nxje" path="res://Assets/sprites/hitmark.png" id="2_ufo47"]
 [ext_resource type="Script" uid="uid://bqfeff63m5idh" path="res://code/game/hover_highlighter.gd" id="4_3llhl"]
 [ext_resource type="Texture2D" uid="uid://indsm7dn7det" path="res://Assets/sprites/Sprite-0002.png" id="4_urn7h"]
 [ext_resource type="Script" uid="uid://c1hied3jlh0aq" path="res://code/game/request_interaction.gd" id="4_y6gbf"]
 [ext_resource type="Texture2D" uid="uid://1fkk3ltyl0ci" path="res://Assets/sprites/White_Cloud_1.png" id="5_ufo47"]
 [ext_resource type="Script" uid="uid://c3yoa0fr1plrk" path="res://code/game/select_highlight.gd" id="6_pmgx0"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7uea4"]
+texture = ExtResource("1_urn7h")
+texture_region_size = Vector2i(25, 25)
+0:0/0 = 0
+0:0/0/custom_data_0 = "FailMark"
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yc34j"]
+texture = ExtResource("2_ufo47")
+texture_region_size = Vector2i(25, 25)
+0:0/0 = 0
+0:0/0/custom_data_0 = "HitMark"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3llhl"]
 texture = ExtResource("5_ufo47")
@@ -32,6 +46,8 @@ custom_data_layer_0/type = 4
 sources/3 = SubResource("TileSetAtlasSource_iywne")
 sources/4 = SubResource("TileSetAtlasSource_y6gbf")
 sources/2 = SubResource("TileSetAtlasSource_3llhl")
+sources/10 = SubResource("TileSetAtlasSource_7uea4")
+sources/11 = SubResource("TileSetAtlasSource_yc34j")
 
 [node name="grid" type="TileMapLayer"]
 z_as_relative = false

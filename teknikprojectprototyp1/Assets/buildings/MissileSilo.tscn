@@ -1,7 +1,31 @@
-[gd_scene load_steps=2 format=3 uid="uid://0jy35qkbhrih"]
+[gd_scene load_steps=4 format=3 uid="uid://dk1xrvpjkako2"]
 
 [ext_resource type="Texture2D" uid="uid://80ftam8eiut1" path="res://Assets/sprites/missilesilo.png" id="1_jclt8"]
+[ext_resource type="Texture2D" uid="uid://cfku72eqq8ea2" path="res://Assets/sprites/missilesilo13124.png" id="2_tsjxe"]
 
-[node name="MissileSilo" type="Sprite2D"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_s3pgm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_jclt8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_jclt8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_tsjxe")
+}],
+"loop": true,
+"name": &"prep",
+"speed": 2.5
+}]
+
+[node name="MissileSilo" type="AnimatedSprite2D"]
 texture_filter = 1
-texture = ExtResource("1_jclt8")
+sprite_frames = SubResource("SpriteFrames_s3pgm")
+frame_progress = 0.21007

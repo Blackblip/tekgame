@@ -29,15 +29,73 @@ func _turn_changed(turn):
 
 func perform_scheduled_actions():
 	var completed = []
-	print(schedule)
 	for a in schedule:
 		var aa = schedule[a]
+		if aa.Type == "Offensive":
+			var source_has_building = false
+			if player == 1:
+				if aa == null:
+					continue
+				var config = Configs.offensive_actions[aa.Action]
+				var source_data = MatchSettings.grid_data_p1[str(aa.From_building)]
+				if source_data.building == config.Source_building:
+					source_has_building = true
+			elif player == 2:
+				if aa == null:
+					continue
+				var config = Configs.offensive_actions[aa.Action]
+				var source_data = MatchSettings.grid_data_p2[str(aa.From_building)]
+				if source_data.building == config.Source_building:
+					source_has_building = true
+			if source_has_building == false:
+				completed.append(a)
+				for o in icons:
+					if o.name == str(aa.tile_pos):
+						o.queue_free()
+						icons.erase(o)
+				continue
+			if aa.Turns_left > 0:
+				aa.Turns_left -= 1
+				if aa.Turns_left != 0:
+					continue
+			var target_grid
+			if player == 1:
+				target_grid = $"../P2G/GridContainer/grid"
+				
+				if MatchSettings.grid_data_p2[str(aa.tile_pos)].building != "":
+					print("hit building")
+					MatchSettings.grid_data_p2_p1_perspective[str(aa.tile_pos)].marked = "correct"
+					MatchSettings.grid_data_p2[str(aa.tile_pos)].broken = true
+					MatchSettings.grid_data_p2[str(aa.tile_pos)].building = ""
+				else:
+					print("hit nothing")
+					MatchSettings.grid_data_p2_p1_perspective[str(aa.tile_pos)].marked = "incorrect"
+			else:
+				target_grid = $"../P1G/GridContainer/grid"
+				
+				if MatchSettings.grid_data_p1[str(aa.tile_pos)].building != "":
+					print("hit building")
+					MatchSettings.grid_data_p1[str(aa.tile_pos)].broken = true
+					MatchSettings.grid_data_p1_p2_perspective[str(aa.tile_pos)].marked = "correct"
+				else:
+					print("hit nothing")
+					MatchSettings.grid_data_p1_p2_perspective[str(aa.tile_pos)].marked = "incorrect"
+			
+			if player == 1:
+				MatchSettings.grid_data_p1[str(aa.From_building)].action_scheduled_on = ""
+			elif player == 2:
+				MatchSettings.grid_data_p2[str(aa.From_building)].action_scheduled_on = ""
+			
+			completed.append(a)
+			for i in icons:
+				if i.name == str(aa.tile_pos):
+					i.queue_free()
+					icons.erase(i)
 		if aa.Type == "Build":
 			if aa.Turns_left > 0:
 				aa.Turns_left -= 1
 				if aa.Turns_left != 0:
 					continue
-			
 			if player == 1:
 				MatchSettings.grid_data_p1[str(aa.tile_pos)].building = aa.Building
 				MatchSettings.grid_data_p1[str(aa.tile_pos)].scheduled = false
@@ -58,29 +116,38 @@ func cancel_action(tile_pos):
 
 	if not schedule.has(key):
 		return
-
 	var action_data = schedule[key]
 	var action_cost = 0
-
-	# Determine action cost
 	if action_data.Type == "Build":
 		var building_data = Configs.buildings[action_data.Building]
 		action_cost = building_data.ActionCost
-
 	elif action_data.Type == "Offensive":
 		var offensive_data = Configs.offensive_actions[action_data.Action]
 		action_cost = offensive_data.ActionCost
-
 	else:
 		return
-
-	# Refund action points
 	if player == 1:
-		MatchSettings.actionsLeftP1 += action_cost
+		if action_data.Type == "Offensive":
+			var config = Configs.offensive_actions[action_data.Action]
+			var source_data = MatchSettings.grid_data_p1[str(action_data.From_building)]
+			if source_data.building == config.Source_building:
+				source_data.action_scheduled_on = ""
+		
+		if action_cost == 1:
+			MatchSettings.actionsLeft1 += 0
+		else:
+			MatchSettings.actionsLeftP1 += action_cost/2
 		$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP1)
-
 	elif player == 2:
-		MatchSettings.actionsLeftP2 += action_cost
+		if action_data.Type == "Offensive":
+			var config = Configs.offensive_actions[action_data.Action]
+			var source_data = MatchSettings.grid_data_p2[str(action_data.From_building)]
+			if source_data.building == config.Source_building:
+				source_data.action_scheduled_on = ""
+		if action_cost == 1:
+			MatchSettings.actionsLeft2 += 0
+		else:
+			MatchSettings.actionsLeftP2 += action_cost/2
 		$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP2)
 	if action_data.Type == "Build":
 		if player == 1:
@@ -93,27 +160,35 @@ func cancel_action(tile_pos):
 		icons.erase(icon_instance)
 	schedule.erase(key)
 
-
 func schedule_offensive(action, tile_pos):
-	print("here")
 	var offensive_data = Configs.offensive_actions[action]
 	
-	var foundBuilding
-	var amountOfBuildings = 0
+	var foundBuildings = true
+	var amountOfSource = 0
 	var amountAlreadyScheduled = 0
+	if schedule.has(str(tile_pos)):
+		return
 	for i in schedule:
 		var data = schedule[i]
 		if data.Type == "Offensive":
 			if data.Action == offensive_data.Name:
 				amountAlreadyScheduled += 1
+	for b in offensive_data.Needed_buildings:
+		var found = false
+		for i in $"./GridContainer/BUILDINGS".get_children():
+			if i.get_meta("Building") == b:
+				found = true
+				break
+		if !found:
+			print("couldnt find")
+			foundBuildings = false
+			break
 	for i in $"./GridContainer/BUILDINGS".get_children():
-		if i.get_meta("Building") == offensive_data.Needed_building:
-			foundBuilding = true
-			amountOfBuildings += 1
-	print(amountOfBuildings, " ", amountAlreadyScheduled)
-	if foundBuilding != true:
+			if i.get_meta("Building") == offensive_data.Source_building:
+				amountOfSource += 1
+	if foundBuildings != true:
 		return
-	if amountAlreadyScheduled >= amountOfBuildings:
+	if amountAlreadyScheduled >= amountOfSource:
 		return
 	if player == 1:
 		if offensive_data.ActionCost > MatchSettings.actionsLeftP1:
@@ -129,34 +204,51 @@ func schedule_offensive(action, tile_pos):
 		else:
 			MatchSettings.actionsLeftP2 -= offensive_data.ActionCost
 			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP2)
-
 	var own_grid: TileMapLayer = $"./GridContainer/grid"
 	var target_grid: TileMapLayer
-
 	if player == 1:
 		target_grid = $"../P2G/GridContainer/grid"
 	else:
 		target_grid = $"../P1G/GridContainer/grid"
-
 	var missile_scene = load("res://Assets/Icons/missle.tscn")
 	var missile_instance = missile_scene.instantiate()
-
 	own_grid.add_child(missile_instance)
-
 	var global_pos = target_grid.to_global(
 		target_grid.map_to_local(tile_pos)
 	)
 	missile_instance.position = own_grid.to_local(global_pos)
-
 	missile_instance.name = str(tile_pos)
+	missile_instance.z_index = 1000
 	icons.append(missile_instance)
-
+	
+	var building_origin
+	if player == 1:
+		for i in MatchSettings.grid_data_p1:
+			if building_origin != null:
+				continue
+			var data = MatchSettings.grid_data_p1[i]
+			if str(data.action_scheduled_on) != "":
+				continue
+			if data.building == offensive_data.Source_building:
+				building_origin = data.tile_pos
+				data.action_scheduled_on = tile_pos
+	elif player == 2:
+		for i in MatchSettings.grid_data_p2:
+			if building_origin != null:
+				continue
+			var data = MatchSettings.grid_data_p2[i]
+			if str(data.action_scheduled_on) != "":
+				continue
+			if data.building == offensive_data.Source_building:
+				building_origin = data.tile_pos
+				data.action_scheduled_on = tile_pos
 	schedule[str(tile_pos)] = {
 		"Type": "Offensive",
 		"Action": offensive_data.Name,
 		"tile_pos": tile_pos,
 		"icon_instance": missile_instance,
-		"Turns_left": offensive_data.Travel_time
+		"Turns_left": offensive_data.Travel_time,
+		"From_building": building_origin,
 	}
 
 func schedule_build(building, tile_pos):
@@ -169,6 +261,8 @@ func schedule_build(building, tile_pos):
 			$GridContainer/grid/HoverHighlight.build_mode = false
 			return
 		if MatchSettings.grid_data_p1[str(tile_pos)].scheduled == true:
+			return
+		if MatchSettings.grid_data_p1[str(tile_pos)].broken == true:
 			return
 		if build_data.ActionCost > MatchSettings.actionsLeftP1:
 			$"../../Interactions".building = null
@@ -187,6 +281,8 @@ func schedule_build(building, tile_pos):
 		if MatchSettings.grid_data_p2[str(tile_pos)].building != "":
 			return
 		if MatchSettings.grid_data_p2[str(tile_pos)].scheduled == true:
+			return
+		if MatchSettings.grid_data_p2[str(tile_pos)].broken == true:
 			return
 		if build_data.ActionCost > MatchSettings.actionsLeftP2:
 			$"../../Interactions".building = null

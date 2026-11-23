@@ -15,6 +15,9 @@ class_name TurnHandler
 @onready var p1Grid
 @onready var p2Grid
 
+@onready var templateID = $TileIDS/TemplateID
+@onready var tileIDS = $TileIDS
+
 enum Turn { PLAYER1, PLAYER2 }
 var current_turn: Turn
 var isPrep = true
@@ -40,14 +43,27 @@ func prepare_grid_data():
 			"tile_pos" : cell,
 			"tile_id" : str(cell.x) + "_" + str(cell.y),
 			"scheduled" : false,
+			"broken" : false,
+			"protected" : {
+				"isProtected": false,
+				"protectedFor": 0,
+			},
+			"action_scheduled_on": "",
 		}
 		MatchSettings.grid_data_p1_p2_perspective[str(cell)] = {
 			"hidden" : true,
-			"building" : "Unknown",
-			"connectedBuildings" : {}, 
-			"tileType" : "Unknown",
-			"tile_pos" : cell
+			"building" : false,
+			"tile_pos" : cell,
+			"marked": "",
 		}
+		
+		var tileID = templateID.duplicate()
+		tileIDS.add_child(tileID)
+		var global_pos = p1Grid.to_global(p1Grid.map_to_local(cell))
+		var local_pos = tileIDS.get_global_transform_with_canvas().affine_inverse() * global_pos
+		tileID.position = local_pos - tileID.size / 2.0
+		tileID.visible = true
+		tileID.text = str(MatchSettings.grid_data_p1[str(cell)].tile_id)
 	for cell in p2Grid.get_used_cells():
 		var tile_data = p2Grid.get_cell_tile_data(cell)
 		var tileType
@@ -59,17 +75,80 @@ func prepare_grid_data():
 			"tileType" : tileType,
 			"tile_pos" : cell,
 			"tile_id" : str(cell.x) + "_" + str(cell.y),
-			"scheduled" : false
+			"scheduled" : false,
+			"broken": false,
+			"protected" : {
+				"isProtected": false,
+				"protectedFor": 0,
+			},
+			"action_scheduled_on": "",
 		}
 		MatchSettings.grid_data_p2_p1_perspective[str(cell)] = {
 			"hidden" : true,
-			"building" : "Unknown",
-			"connectedBuildings" : {}, 
-			"tileType" : "Unknown",
-			"tile_pos" : cell
+			"building" : false,
+			"tile_pos" : cell,
+			"marked": "",
 		}
+		var tileID = templateID.duplicate()
+		tileIDS.add_child(tileID)
+		var global_pos = p2Grid.to_global(p1Grid.map_to_local(cell))
+		var local_pos = tileIDS.get_global_transform_with_canvas().affine_inverse() * global_pos
+		tileID.position = local_pos - tileID.size / 2.0
+		tileID.visible = true
+		tileID.text = str(MatchSettings.grid_data_p2[str(cell)].tile_id)
+
+func update_grid_visuals():
+	if current_turn == 0:
+		for cell in p1Grid.get_used_cells():
+			var _tile_data = p1Grid.get_cell_tile_data(cell)
+			var tile_type = MatchSettings.grid_data_p1[str(cell)].tileType
+			if Configs.tile_types.has(tile_type):
+				var tile = Configs.tile_types[tile_type]
+				p1Grid.set_cell(cell, tile[0], tile[1])
+		for cell in p2Grid.get_used_cells():
+			if MatchSettings.grid_data_p2_p1_perspective[str(cell)]["building"] == true:
+				var cell_data = MatchSettings.grid_data_p2[str(cell)]
+				$P2G/GridContainer/BUILDINGS.spawn_building(cell_data)
+			if MatchSettings.grid_data_p2_p1_perspective[str(cell)]["marked"] == "correct":
+				var tile = Configs.tile_types["HitMark"]
+				p2Grid.set_cell(cell, tile[0], tile[1])
+			if MatchSettings.grid_data_p2_p1_perspective[str(cell)]["marked"] == "incorrect":
+				var tile = Configs.tile_types["FailMark"]
+				p2Grid.set_cell(cell, tile[0], tile[1])
+			if MatchSettings.grid_data_p2_p1_perspective[str(cell)]["hidden"] == true and MatchSettings.grid_data_p2_p1_perspective[str(cell)]["marked"] == "":
+				p2Grid.set_cell(cell, 4, Vector2i(0, 0))
+			elif MatchSettings.grid_data_p2_p1_perspective[str(cell)]["hidden"] == false:
+				var tile_type = MatchSettings.grid_data_p2[str(cell)].tileType
+				if Configs.tile_types.has(tile_type):
+					var tile = Configs.tile_types[tile_type]
+					p2Grid.set_cell(cell, tile[0], tile[1])
+	elif current_turn == 1:
+		for cell in p2Grid.get_used_cells():
+			var _tile_data = p2Grid.get_cell_tile_data(cell)
+			var tile_type = MatchSettings.grid_data_p2[str(cell)].tileType
+			if Configs.tile_types.has(tile_type):
+				var tile = Configs.tile_types[tile_type]
+				p2Grid.set_cell(cell, tile[0], tile[1])
+		for cell in p1Grid.get_used_cells():
+			if MatchSettings.grid_data_p2_p1_perspective[str(cell)]["building"] == true:
+				var cell_data = MatchSettings.grid_data_p1[str(cell)]
+				$P1G/GridContainer/BUILDINGS.spawn_building(cell_data)
+			if MatchSettings.grid_data_p1_p2_perspective[str(cell)]["marked"] == "correct":
+				var tile = Configs.tile_types["HitMark"]
+				p1Grid.set_cell(cell, tile[0], tile[1])
+			if MatchSettings.grid_data_p1_p2_perspective[str(cell)]["marked"] == "incorrect":
+				var tile = Configs.tile_types["FailMark"]
+				p1Grid.set_cell(cell, tile[0], tile[1])
+			if MatchSettings.grid_data_p1_p2_perspective[str(cell)]["hidden"] == true and MatchSettings.grid_data_p1_p2_perspective[str(cell)]["marked"] == "":
+				p1Grid.set_cell(cell, 4, Vector2i(0, 0))
+			elif MatchSettings.grid_data_p1_p2_perspective[str(cell)]["hidden"] == false:
+				var tile_type = MatchSettings.grid_data_p1[str(cell)].tileType
+				if Configs.tile_types.has(tile_type):
+					var tile = Configs.tile_types[tile_type]
+					p1Grid.set_cell(cell, tile[0], tile[1])
 
 func _ready():
+	tileIDS.visible = false
 	p1Node.visible = false
 	p2Node.visible = false
 	UI.visible = false
@@ -178,38 +257,12 @@ func start_turn():
 		Turn.PLAYER1:
 			MatchSettings.actionsLeftP1 = MatchSettings.actionsPerTurnP1
 			actionsUI.text = str(MatchSettings.actionsLeftP1)
-			
-			#p1Node.visible = true
-			
 			endButton.visible = true
 			startButton.visible = false
-			
-			for cell in p1Grid.get_used_cells():
-				var _tile_data = p1Grid.get_cell_tile_data(cell)
-				var tile_type = MatchSettings.grid_data_p1[str(cell)].tileType
-
-				if Configs.tile_types.has(tile_type):
-					var tile = Configs.tile_types[tile_type]
-					p1Grid.set_cell(cell, tile[0], tile[1])
-			for cell in p2Grid.get_used_cells():
-				if MatchSettings.grid_data_p2_p1_perspective[str(cell)]["hidden"] == true:
-					p2Grid.set_cell(cell, 4, Vector2i(0, 0))
+			update_grid_visuals()
 		Turn.PLAYER2:
 			MatchSettings.actionsLeftP2 = MatchSettings.actionsPerTurnP2
 			actionsUI.text = str(MatchSettings.actionsLeftP2)
-			
-			#p2Node.visible = true
-			
 			startButton.visible = false
 			endButton.visible = true
-			
-			for cell in p2Grid.get_used_cells():
-				var _tile_data = p2Grid.get_cell_tile_data(cell)
-				var tile_type = MatchSettings.grid_data_p2[str(cell)].tileType
-
-				if Configs.tile_types.has(tile_type):
-					var tile = Configs.tile_types[tile_type]
-					p2Grid.set_cell(cell, tile[0], tile[1])
-			for cell in p1Grid.get_used_cells():
-				if MatchSettings.grid_data_p1_p2_perspective[str(cell)]["hidden"] == true:
-					p1Grid.set_cell(cell, 4, Vector2i(0, 0))
+			update_grid_visuals()

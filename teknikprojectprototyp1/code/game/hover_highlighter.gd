@@ -16,16 +16,13 @@ var cancel_mode
 
 func _ready():
 	player = get_parent().get_parent().get_meta("Player")
-
 	if player == 1:
 		player_grid_data = MatchSettings.grid_data_p1
 		gridLayer2 = $"../../../../P2G/GridContainer/grid"
 	elif player == 2:
 		player_grid_data = MatchSettings.grid_data_p2
 		gridLayer2 = $"../../../../P1G/GridContainer/grid"
-
 	turnHandler.turn_changed.connect(_turn_changed)
-
 
 func _process(_delta: float) -> void:
 	if gridLayer2 == null:
@@ -82,9 +79,18 @@ func _draw():
 		return
 	if build_mode == true:
 		var tileType = player_grid_data.get(str(last_hovered), {}).get("tileType", "Unknown")
-		if Configs.buildable_tiles.has(tileType):
+		var broken = player_grid_data.get(str(last_hovered), {}).get("broken", "Unknown")
+		var building = player_grid_data.get(str(last_hovered), {}).get("building", "Unknown")
+		var scheduled = player_grid_data.get(str(last_hovered), {}).get("scheduled", "Unknown")
+		if broken == true:
+			draw_rect(rect, Color.RED, false, 2.0)
+		if scheduled == true:
+			draw_rect(rect, Color.RED, false, 2.0)
+		if building != "":
+			draw_rect(rect, Color.RED, false, 2.0)
+		if Configs.buildable_tiles.has(tileType) and broken == false and building == "" and scheduled == false:
 			draw_rect(rect, Color.GREEN, false, 2.0)
-		else:
+		elif not Configs.buildable_tiles.has(tileType):
 			draw_rect(rect, Color.RED, false, 2.0)
 		return
 	draw_rect(rect, Color.BLACK, false, 2.0)

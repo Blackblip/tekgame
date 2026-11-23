@@ -98,6 +98,8 @@ func update_scroll(tile_data):
 
 	if tile_data.building != "":
 		dupe_info_ui(tile_data.building)
+	if str(tile_data.action_scheduled_on) != "":
+		dupe_info_ui(str("Targeting: ", tile_data.action_scheduled_on))
 
 	if tile_data.scheduled == true:
 		if $"../TurnHandler".current_turn == 0:
@@ -219,12 +221,20 @@ func _offensive_category_show():
 func _offensive(offensive_data):
 	clear_selection()
 	cleanse_info_ui()
+	if offensive == offensive_data.Name:
+		offensive = null
+		set_hover_modes(false, false)
+		return
+	
 	building = null
 	offensive = offensive_data.Name
 	set_hover_modes(false, false)
 	dupe_info_ui(offensive_data.Name)
-	if offensive_data.Needed_building != "":
-		dupe_info_ui(str("Required building: ", offensive_data.Needed_building))
+	var required_buildings = []
+	if offensive_data.Needed_buildings != null:
+		for i in offensive_data.Needed_buildings:
+			required_buildings.append(i)
+	dupe_info_ui(str("Required buildings: ", required_buildings))
 
 func _build(build_data):
 	cleanse_info_ui()

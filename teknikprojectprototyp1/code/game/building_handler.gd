@@ -5,8 +5,10 @@ extends Node
 
 var actionsToGive
 
-func _spawn_building(tile_data):
+func spawn_building(tile_data):
 	if $".".find_child(str(tile_data.tile_pos)):
+		return
+	if tile_data.building == "":
 		return
 	
 	var tile_pos = tile_data.tile_pos
@@ -42,6 +44,8 @@ func updateActions():
 func _ready():
 	turnHandler.turn_changed.connect(_turn_changed)
 func _turn_changed(turn):
+	for i in $".".get_children():
+		i.queue_free()
 	if str(turn) == str(player - 1):
 		var grid = $"../grid"
 		if player == 1:
@@ -53,7 +57,7 @@ func _turn_changed(turn):
 					if $".".find_child(str(tile_data.tile_pos)):
 						return
 					if Configs.buildings.has(tile_data.building):
-						_spawn_building(tile_data)
+						spawn_building(tile_data)
 		elif player == 2:
 			for i in $".".get_children():
 				i.visible = true
@@ -63,7 +67,7 @@ func _turn_changed(turn):
 					if $".".find_child(str(tile_data.tile_pos)):
 						return
 					if Configs.buildings.has(tile_data.building):
-						_spawn_building(tile_data)
+						spawn_building(tile_data)
 	elif str(turn) != str(player):
 		if player == 1:
 			for i in $".".get_children():
