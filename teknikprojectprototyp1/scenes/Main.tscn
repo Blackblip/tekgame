@@ -1,0 +1,90 @@
+[gd_scene load_steps=10 format=3 uid="uid://bdgap2i706mj1"]
+
+[ext_resource type="Texture2D" uid="uid://mcpa38loukbr" path="res://Assets/sprites/Old_tv_black_screen.png" id="1_elqb8"]
+[ext_resource type="Shader" uid="uid://dwmwvqgg2wprq" path="res://code/shaders/crtTV_effect.gdshader" id="2_0bbpv"]
+[ext_resource type="Script" uid="uid://v5kq3s2xq8bf" path="res://code/makeVis.gd" id="3_rarhs"]
+[ext_resource type="Script" uid="uid://dwjhj4snxs4mg" path="res://code/settings/s_round.gd" id="4_rarhs"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vcsgt"]
+bg_color = Color(0.396889, 0.396889, 0.396889, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c01mt"]
+shader = ExtResource("2_0bbpv")
+shader_parameter/curvature = 0.21
+shader_parameter/scanline_strength = 0.585
+shader_parameter/vignette_strength = 0.515
+shader_parameter/chromatic_aberration = 0.002
+shader_parameter/noise_strength = 0.08
+shader_parameter/brightness = 1.635
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nxtc6"]
+bg_color = Color(0.169245, 0.169245, 0.169245, 0.690196)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0bbpv"]
+bg_color = Color(1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jlsqs"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="Main" type="Node2D"]
+
+[node name="OldTvBlackScreen" type="Sprite2D" parent="."]
+z_index = 1
+texture_filter = 1
+position = Vector2(600, 264)
+scale = Vector2(5.23333, 5.23333)
+texture = ExtResource("1_elqb8")
+
+[node name="Background" type="Panel" parent="."]
+z_index = -10
+offset_left = 294.0
+offset_top = 44.0
+offset_right = 872.0
+offset_bottom = 482.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_vcsgt")
+
+[node name="TV_EFFECT" type="ColorRect" parent="."]
+z_index = -5
+material = SubResource("ShaderMaterial_c01mt")
+offset_left = 307.0
+offset_top = 72.0
+offset_right = 830.0
+offset_bottom = 466.0
+mouse_filter = 2
+script = ExtResource("3_rarhs")
+
+[node name="Main" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Play" type="Button" parent="Main"]
+z_index = -6
+texture_filter = 1
+layout_mode = 0
+offset_left = 296.0
+offset_top = 224.0
+offset_right = 847.0
+offset_bottom = 264.0
+theme_override_styles/focus = SubResource("StyleBoxFlat_nxtc6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nxtc6")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_0bbpv")
+theme_override_styles/normal = SubResource("StyleBoxFlat_jlsqs")
+text = "Play
+"
+script = ExtResource("4_rarhs")
+
+[node name="Configs" type="Button" parent="Main"]
+z_index = -6
+texture_filter = 1
+layout_mode = 0
+offset_left = 296.0
+offset_top = 267.0
+offset_right = 847.0
+offset_bottom = 307.0
+theme_override_styles/focus = SubResource("StyleBoxFlat_nxtc6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nxtc6")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_0bbpv")
+theme_override_styles/normal = SubResource("StyleBoxFlat_jlsqs")
+text = "Configs"

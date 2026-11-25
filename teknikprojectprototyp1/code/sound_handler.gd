@@ -29,7 +29,6 @@ func resume_sounds():
 func play_sound(path: String):
 	for player in available_players:
 		if !player.playing:
-			if !player.stream == SoundList.SFX[path]:
-				player.stream = SoundList.SFX[path]
-				player.play()
-				return
+			player.stream = SoundList.SFX[path]
+			player.play()
+			return

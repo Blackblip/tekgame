@@ -38,12 +38,13 @@ func _turn_changed(turn):
 func _input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			if player == 0:
-				sound_handler = $"../../../../SoundsP1"
-				sound_handler.play_sound("Click")
-			if player == 1:
-				sound_handler = $"../../../../SoundsP2"
-				sound_handler.play_sound("Click")
+			if event.is_pressed():
+				if player == 0:
+					sound_handler = $"../../../../SoundsP1"
+					sound_handler.play_sound("Click")
+				if player == 1:
+					sound_handler = $"../../../../SoundsP2"
+					sound_handler.play_sound("Click")
 	if not isMyTurn:
 		return
 	if event.is_action_pressed("Shift"):

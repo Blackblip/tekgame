@@ -28,6 +28,12 @@ func _turn_changed(turn):
 		for i in icons:
 			i.visible = true
 
+func remove_action_icon(action_data):
+	var icon = action_data.get("icon_instance")
+	if is_instance_valid(icon):
+		icons.erase(icon)
+		icon.queue_free()
+
 func perform_scheduled_actions():
 	var completed = []
 	for a in schedule:
@@ -88,10 +94,7 @@ func perform_scheduled_actions():
 				MatchSettings.grid_data_p2[str(aa.From_building)].action_scheduled_on = ""
 			
 			completed.append(a)
-			for i in icons:
-				if i.name == str(aa.tile_pos):
-					i.queue_free()
-					icons.erase(i)
+			remove_action_icon(aa)
 		if aa.Type == "Build":
 			if aa.Turns_left > 0:
 				aa.Turns_left -= 1
@@ -142,7 +145,7 @@ func cancel_action(tile_pos):
 					building_instance.play("default")
 		
 		if action_cost == 1:
-			MatchSettings.actionsLeft1 += 0
+			MatchSettings.actionsLeftP1 += 0
 		else:
 			MatchSettings.actionsLeftP1 += action_cost/2
 		$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP1)
@@ -163,9 +166,8 @@ func cancel_action(tile_pos):
 		elif player == 2:
 			MatchSettings.grid_data_p2[key].scheduled = false
 	var icon_instance = action_data.get("icon_instance")
-	if is_instance_valid(icon_instance):
-		icon_instance.queue_free()
-		icons.erase(icon_instance)
+	
+	remove_action_icon(schedule[key])
 	schedule.erase(key)
 
 func schedule_offensive(action, tile_pos):
@@ -212,8 +214,6 @@ func schedule_offensive(action, tile_pos):
 		else:
 			MatchSettings.actionsLeftP2 -= offensive_data.ActionCost
 			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP2)
-	
-	
 	
 	var own_grid: TileMapLayer = $"./GridContainer/grid"
 	var target_grid: TileMapLayer
@@ -281,8 +281,8 @@ func schedule_build(building, tile_pos):
 		if !Configs.buildable_tiles.has(MatchSettings.grid_data_p1[str(tile_pos)].tileType):
 			return
 		if MatchSettings.grid_data_p1[str(tile_pos)].building != "":
-			$"../../Interactions".building = null
-			$GridContainer/grid/HoverHighlight.build_mode = false
+			#$"../../Interactions".building = null
+			#$GridContainer/grid/HoverHighlight.build_mode = false
 			return
 		if MatchSettings.grid_data_p1[str(tile_pos)].scheduled == true:
 			return
