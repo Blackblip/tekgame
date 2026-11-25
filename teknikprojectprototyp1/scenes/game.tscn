@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dfol304vf38b7"]
+[gd_scene load_steps=19 format=3 uid="uid://dfol304vf38b7"]
 
 [ext_resource type="Script" uid="uid://cvw2sg0y2m6e1" path="res://code/game/action_handler.gd" id="2_lbhrr"]
 [ext_resource type="Script" uid="uid://d4n58ctcbe3" path="res://code/game/turn_handler.gd" id="2_yqjtg"]
@@ -13,6 +13,8 @@
 [ext_resource type="Texture2D" uid="uid://cfrl3tu0x5t3g" path="res://Assets/sprites/missileplaceholder.png" id="9_kvpfn"]
 [ext_resource type="Texture2D" uid="uid://bmg4twqsv5buy" path="res://Assets/sprites/shieldorsum.png" id="10_dinhu"]
 [ext_resource type="Script" uid="uid://v5kq3s2xq8bf" path="res://code/makeVis.gd" id="13_kvuet"]
+[ext_resource type="Script" uid="uid://di7jm0v8mpgf8" path="res://code/music_handler.gd" id="14_trtic"]
+[ext_resource type="Script" uid="uid://dmnvr47mev0h" path="res://code/sound_handler.gd" id="15_ir15t"]
 
 [sub_resource type="Theme" id="Theme_lnu2h"]
 
@@ -26,12 +28,12 @@ border_color = Color(0, 0, 0, 0)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kvuet"]
 shader = ExtResource("4_dinhu")
-shader_parameter/curvature = 0.08
-shader_parameter/scanline_strength = 0.2
-shader_parameter/vignette_strength = 0.4
-shader_parameter/chromatic_aberration = 0.002
-shader_parameter/noise_strength = 0.01
-shader_parameter/brightness = 1.0
+shader_parameter/curvature = 0.02
+shader_parameter/scanline_strength = 0.685
+shader_parameter/vignette_strength = 0.254
+shader_parameter/chromatic_aberration = 0.0
+shader_parameter/noise_strength = 0.082
+shader_parameter/brightness = 1.55
 
 [node name="Game" type="Node2D"]
 position = Vector2(-34, 0)
@@ -111,11 +113,12 @@ autowrap_mode = 3
 [node name="TurnHandler" type="Node" parent="."]
 script = ExtResource("2_yqjtg")
 
-[node name="P2G" type="Node2D" parent="TurnHandler"]
+[node name="P2G" type="Node2D" parent="TurnHandler" node_paths=PackedStringArray("sound_handler")]
 z_index = 1
 z_as_relative = false
 position = Vector2(-34, 0)
 script = ExtResource("2_lbhrr")
+sound_handler = NodePath("../../SoundsP2")
 
 [node name="GridContainer" type="Panel" parent="TurnHandler/P2G"]
 anchors_preset = 1
@@ -144,9 +147,10 @@ mouse_filter = 0
 text = "PLAYER 2"
 horizontal_alignment = 1
 
-[node name="P1G" type="Node2D" parent="TurnHandler"]
+[node name="P1G" type="Node2D" parent="TurnHandler" node_paths=PackedStringArray("sound_handler")]
 position = Vector2(-34, 0)
 script = ExtResource("2_lbhrr")
+sound_handler = NodePath("../../SoundsP2")
 
 [node name="GridContainer" type="Panel" parent="TurnHandler/P1G"]
 anchors_preset = 8
@@ -203,16 +207,18 @@ autowrap_mode = 2
 [node name="MapSelector" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 80.0
+offset_top = 87.0
+offset_right = 120.0
+offset_bottom = 127.0
 script = ExtResource("4_lbhrr")
 
 [node name="GridContainer" type="GridContainer" parent="MapSelector"]
 layout_mode = 0
-offset_left = 40.0
-offset_top = 7.0
-offset_right = 1191.0
-offset_bottom = 656.0
+offset_left = -19.0
+offset_top = -57.0
+offset_right = 1132.0
+offset_bottom = 592.0
 mouse_filter = 2
 columns = 6
 
@@ -223,10 +229,10 @@ text = "TEMPLATE"
 
 [node name="Choosing" type="Label" parent="MapSelector"]
 layout_mode = 0
-offset_left = 872.0
-offset_top = 606.0
-offset_right = 1181.0
-offset_bottom = 648.0
+offset_left = 771.0
+offset_top = 499.0
+offset_right = 1080.0
+offset_bottom = 541.0
 theme_override_font_sizes/font_size = 30
 text = "PLAYER IS CHOOSING"
 
@@ -355,9 +361,24 @@ stretch_mode = 0
 visible = false
 z_index = 4096
 material = SubResource("ShaderMaterial_kvuet")
-offset_left = -174.0
-offset_top = -146.0
-offset_right = 1392.0
-offset_bottom = 791.0
+offset_left = -143.0
+offset_top = -140.0
+offset_right = 1423.0
+offset_bottom = 797.0
 mouse_filter = 2
 script = ExtResource("13_kvuet")
+
+[node name="Music" type="AudioStreamPlayer" parent="." node_paths=PackedStringArray("Player")]
+volume_db = -40.0
+autoplay = true
+script = ExtResource("14_trtic")
+Player = NodePath(".")
+Play_onready = true
+
+[node name="SoundsP2" type="AudioStreamPlayer" parent="."]
+script = ExtResource("15_ir15t")
+metadata/Player = 1
+
+[node name="SoundsP1" type="AudioStreamPlayer" parent="."]
+script = ExtResource("15_ir15t")
+metadata/Player = 0

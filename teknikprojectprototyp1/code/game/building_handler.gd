@@ -15,6 +15,11 @@ func spawn_building(tile_data):
 	var path = Configs.buildings[tile_data.building].Path
 	var building_scene = load(path)
 	var building_instance = building_scene.instantiate()
+	if building_instance is AnimatedSprite2D:
+		if str(tile_data.action_scheduled_on) != "":
+			building_instance.play("prep")
+		else:
+			building_instance.play("default")
 	$".".add_child(building_instance)
 	var global_pos = $"../../GridContainer/grid".to_global($"../../GridContainer/grid".map_to_local(tile_pos))
 	building_instance.global_position = global_pos

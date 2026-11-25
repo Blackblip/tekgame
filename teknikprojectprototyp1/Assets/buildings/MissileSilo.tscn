@@ -28,4 +28,5 @@ animations = [{
 [node name="MissileSilo" type="AnimatedSprite2D"]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_s3pgm")
-frame_progress = 0.21007
+animation = &"prep"
+frame_progress = 0.14262

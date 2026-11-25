@@ -4,6 +4,7 @@ extends TileMapLayer
 @onready var gridLayer = self
 @onready var turnHandler = $"../../.."
 @onready var interactions = $"../../../../Interactions"
+@onready var sound_handler
 
 var gridLayer2: TileMapLayer
 
@@ -35,6 +36,14 @@ func _turn_changed(turn):
 	queue_redraw()
 
 func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if player == 0:
+				sound_handler = $"../../../../SoundsP1"
+				sound_handler.play_sound("Click")
+			if player == 1:
+				sound_handler = $"../../../../SoundsP2"
+				sound_handler.play_sound("Click")
 	if not isMyTurn:
 		return
 	if event.is_action_pressed("Shift"):

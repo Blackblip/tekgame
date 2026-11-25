@@ -2,6 +2,7 @@ extends Node2D
 @onready var player = $GridContainer.get_meta("Player")
 @onready var turnHandler = $".."
 @onready var container
+@export var sound_handler: AudioStreamPlayer
 
 var icons = [
 	
@@ -132,6 +133,13 @@ func cancel_action(tile_pos):
 			var source_data = MatchSettings.grid_data_p1[str(action_data.From_building)]
 			if source_data.building == config.Source_building:
 				source_data.action_scheduled_on = ""
+				var building_instance
+				
+				for b in $GridContainer/BUILDINGS.get_children():
+					if b.name == str(action_data.From_building):
+						building_instance = b
+				if building_instance is AnimatedSprite2D:
+					building_instance.play("default")
 		
 		if action_cost == 1:
 			MatchSettings.actionsLeft1 += 0
@@ -204,6 +212,9 @@ func schedule_offensive(action, tile_pos):
 		else:
 			MatchSettings.actionsLeftP2 -= offensive_data.ActionCost
 			$"../../CenterContainer/UI/PActions".text = str(MatchSettings.actionsLeftP2)
+	
+	
+	
 	var own_grid: TileMapLayer = $"./GridContainer/grid"
 	var target_grid: TileMapLayer
 	if player == 1:
@@ -232,6 +243,12 @@ func schedule_offensive(action, tile_pos):
 			if data.building == offensive_data.Source_building:
 				building_origin = data.tile_pos
 				data.action_scheduled_on = tile_pos
+				var building_instance
+				for b in $GridContainer/BUILDINGS.get_children():
+					if b.name == str(building_origin):
+						building_instance = b
+				if building_instance is AnimatedSprite2D:
+					building_instance.play("prep")
 	elif player == 2:
 		for i in MatchSettings.grid_data_p2:
 			if building_origin != null:
@@ -242,6 +259,13 @@ func schedule_offensive(action, tile_pos):
 			if data.building == offensive_data.Source_building:
 				building_origin = data.tile_pos
 				data.action_scheduled_on = tile_pos
+				var building_instance
+				for b in $GridContainer/BUILDINGS.get_children():
+					if b.name == str(building_origin):
+						building_instance = b
+				if building_instance is AnimatedSprite2D:
+					building_instance.play("prep")
+	
 	schedule[str(tile_pos)] = {
 		"Type": "Offensive",
 		"Action": offensive_data.Name,
@@ -295,6 +319,13 @@ func schedule_build(building, tile_pos):
 				$"../../Interactions".building = null
 				$GridContainer/grid/HoverHighlight.build_mode = false
 				$GridContainer/grid/HoverHighlight.queue_redraw()
+	
+	if player == 0:
+		sound_handler = $"../../SoundsP1"
+		sound_handler.play_sound("Hand_saw")
+	if player == 1:
+		sound_handler = $"../../SoundsP2"
+		sound_handler.play_sound("Hand_saw")
 	
 	var hammer_scene = load("res://Assets/Icons/hammer.tscn")
 	var hammer_instance = hammer_scene.instantiate()

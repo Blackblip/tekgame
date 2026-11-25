@@ -19,6 +19,8 @@ config/icon="res://icon.svg"
 
 MatchSettings="*res://code/globals/MatchSettings.gd"
 Configs="*res://code/globals/Configs.gd"
+MusicList="*res://code/globals/MusicList.gd"
+SoundList="*res://code/globals/SoundList.gd"
 
 [display]
 
