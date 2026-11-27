@@ -47,6 +47,8 @@ func _input(event):
 					sound_handler.play_sound("Click")
 	if not isMyTurn:
 		return
+	if event.is_action_pressed("Cancel"):
+		interactions.cancel()
 	if event.is_action_pressed("Shift"):
 		$"../../../TileIDS".visible = true
 	if event.is_action_released("Shift"):

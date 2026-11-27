@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://dfol304vf38b7"]
+[gd_scene load_steps=20 format=3 uid="uid://dfol304vf38b7"]
 
 [ext_resource type="Script" uid="uid://cvw2sg0y2m6e1" path="res://code/game/action_handler.gd" id="2_lbhrr"]
 [ext_resource type="Script" uid="uid://d4n58ctcbe3" path="res://code/game/turn_handler.gd" id="2_yqjtg"]
@@ -26,13 +26,16 @@ border_width_right = 10
 border_width_bottom = 10
 border_color = Color(0, 0, 0, 0)
 
+[sub_resource type="LabelSettings" id="LabelSettings_ir15t"]
+font_color = Color(0, 0, 0, 1)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kvuet"]
 shader = ExtResource("4_dinhu")
-shader_parameter/curvature = 0.015
-shader_parameter/scanline_strength = 0.685
+shader_parameter/curvature = 0.01
+shader_parameter/scanline_strength = 0.474
 shader_parameter/vignette_strength = 0.254
-shader_parameter/chromatic_aberration = 0.0
-shader_parameter/noise_strength = 0.082
+shader_parameter/chromatic_aberration = 0.001
+shader_parameter/noise_strength = 0.1
 shader_parameter/brightness = 1.55
 
 [node name="Game" type="Node2D"]
@@ -202,6 +205,7 @@ offset_right = 18.0
 offset_bottom = 1.0
 theme_override_font_sizes/font_size = 8
 text = "5_2"
+label_settings = SubResource("LabelSettings_ir15t")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -244,10 +248,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 46.0
-offset_top = 559.0
-offset_right = 1180.0
-offset_bottom = 643.0
+offset_left = 44.0
+offset_top = 551.0
+offset_right = 1178.0
+offset_bottom = 635.0
 grow_horizontal = 2
 grow_vertical = 2
 vertical_scroll_mode = 0
@@ -383,3 +387,6 @@ metadata/Player = 1
 [node name="SoundsP1" type="AudioStreamPlayer" parent="."]
 script = ExtResource("15_ir15t")
 metadata/Player = 0
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(610, 322)
